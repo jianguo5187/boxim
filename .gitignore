@@ -10,3 +10,7 @@
 /im-uniapp/node_modules/
 /im-ui/jsconfig.json
 /package-lock.json
+/im-client/target
+/im-commom/target
+/im-platform/target
+/im-server/target
