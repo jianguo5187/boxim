@@ -44,14 +44,14 @@
 								<div title="回执消息" v-show="chat.type == 'GROUP'" class="icon iconfont icon-receipt"
 									:class="isReceipt ? 'chat-tool-active' : ''" @click="onSwitchReceipt">
 								</div>
-								<div title="发送语音" class="el-icon-microphone" @click="showVoiceBox()">
-								</div>
-								<div title="语音通话" v-show="chat.type == 'PRIVATE'" class="el-icon-phone-outline"
-									@click="showChatVideo('voice')">
-								</div>
-								<div title="视频通话" v-show="chat.type == 'PRIVATE'" class="el-icon-video-camera"
-									@click="showChatVideo('video')">
-								</div>
+<!--								<div title="发送语音" class="el-icon-microphone" @click="showVoiceBox()">-->
+<!--								</div>-->
+<!--								<div title="语音通话" v-show="chat.type == 'PRIVATE'" class="el-icon-phone-outline"-->
+<!--									@click="showChatVideo('voice')">-->
+<!--								</div>-->
+<!--								<div title="视频通话" v-show="chat.type == 'PRIVATE'" class="el-icon-video-camera"-->
+<!--									@click="showChatVideo('video')">-->
+<!--								</div>-->
 								<div title="聊天记录" class="el-icon-chat-dot-round" @click="showHistoryBox()"></div>
 							</div>
 							<div class="send-content-area">

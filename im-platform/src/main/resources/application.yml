@@ -34,8 +34,8 @@ mybatis-plus:
   mapper-locations:
     - classpath*:mapper/*.xml
 minio:
-  endpoint: http://127.0.0.1:9001 #内网地址
-  public: http://127.0.0.1:9001  #外网访问地址
+  endpoint: http://127.0.0.1:9000 #内网地址
+  public: http://127.0.0.1:9000  #外网访问地址
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: box-im
@@ -49,7 +49,7 @@ webrtc:
 
 jwt:
   accessToken:
-    expireIn: 1800 #半个小时
+    expireIn: 28800 #8个小时
     secret: MIIBIjANBgkq
   refreshToken:
     expireIn: 604800 #7天
