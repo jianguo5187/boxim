@@ -3,10 +3,12 @@ package com.bx.implatform.controller;
 import com.bx.implatform.dto.LoginDTO;
 import com.bx.implatform.dto.ModifyPwdDTO;
 import com.bx.implatform.dto.RegisterDTO;
+import com.bx.implatform.dto.ThirdLoginDTO;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IUserService;
 import com.bx.implatform.vo.LoginVO;
+import com.bx.implatform.vo.ThirdLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,13 @@ public class LoginController {
     @ApiOperation(value = "用户注册", notes = "用户注册")
     public Result register(@Valid @RequestBody LoginDTO dto) {
         LoginVO vo = userService.login(dto);
+        return ResultUtils.success(vo);
+    }
+
+    @PostMapping("/thirdLogin")
+    @ApiOperation(value = "第三方用户登录", notes = "第三方用户登录")
+    public Result thirdLogin(@Valid @RequestBody ThirdLoginDTO dto) {
+        ThirdLoginVO vo = userService.thirdLogin(dto);
         return ResultUtils.success(vo);
     }
 

@@ -8,9 +8,9 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/boxim?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
-    username: boxim
-    password: 123456
+    url: jdbc:mysql://localhost:3306/okpay?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: okpay
+    password: 7WT6NtWcLjdWD5MW
 
   redis:
     host: localhost

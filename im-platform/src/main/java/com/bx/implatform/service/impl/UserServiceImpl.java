@@ -12,6 +12,7 @@ import com.bx.implatform.config.JwtProperties;
 import com.bx.implatform.dto.LoginDTO;
 import com.bx.implatform.dto.ModifyPwdDTO;
 import com.bx.implatform.dto.RegisterDTO;
+import com.bx.implatform.dto.ThirdLoginDTO;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.entity.GroupMember;
 import com.bx.implatform.entity.User;
@@ -26,6 +27,7 @@ import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;
+import com.bx.implatform.vo.ThirdLoginVO;
 import com.bx.implatform.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +70,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
         vo.setRefreshToken(refreshToken);
         vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        return vo;
+    }
+
+    @Override
+    public ThirdLoginVO thirdLogin(ThirdLoginDTO dto) {
+        User user = this.findUserByThirdUserId(dto.getThirdUserId());
+        if (null == user) {
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
+        }
+        // 生成token
+        UserSession session = BeanUtils.copyProperties(user, UserSession.class);
+        session.setUserId(user.getId());
+        session.setTerminal(dto.getTerminal());
+        String strJson = JSON.toJSONString(session);
+        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+        ThirdLoginVO vo = new ThirdLoginVO();
+        vo.setAccessToken(accessToken);
+        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+        vo.setRefreshToken(refreshToken);
+        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        vo.setUserName(user.getUserName());
         return vo;
     }
 
@@ -117,6 +141,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public User findUserByUserName(String username) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getUserName, username);
+        return this.getOne(queryWrapper);
+    }
+
+    @Override
+    public User findUserByThirdUserId(Long thirdUserId) {
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(User::getThirdUserId, thirdUserId);
         return this.getOne(queryWrapper);
     }
 

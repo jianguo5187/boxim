@@ -2,7 +2,7 @@
 	<el-dialog class="setting" title="设置" :visible.sync="visible"  width="500px" :before-close="onClose">
 		<el-form :model="userInfo" label-width="80px" :rules="rules" ref="settingForm">
 			<el-form-item label="头像">
-				<file-upload  class="avatar-uploader"
+				<file-upload  disabled class="avatar-uploader"
 				:action="imageAction" 
 				:showLoading="true"
 				:maxSize="maxSize"  
@@ -16,16 +16,16 @@
 				<el-input disabled v-model="userInfo.userName" autocomplete="off"></el-input>
 			</el-form-item>
 			<el-form-item prop="nickName" label="昵称">
-				<el-input v-model="userInfo.nickName" autocomplete="off"></el-input>
+				<el-input disabled v-model="userInfo.nickName" autocomplete="off"></el-input>
 			</el-form-item>
-			<el-form-item label="性别">
-				<el-radio-group v-model="userInfo.sex">
-					<el-radio :label="0">男</el-radio>
-					<el-radio :label="1">女</el-radio>
-				</el-radio-group>
-			</el-form-item>
+<!--			<el-form-item label="性别">-->
+<!--				<el-radio-group v-model="userInfo.sex">-->
+<!--					<el-radio :label="0">男</el-radio>-->
+<!--					<el-radio :label="1">女</el-radio>-->
+<!--				</el-radio-group>-->
+<!--			</el-form-item>-->
 			<el-form-item label="个性签名">
-				<el-input type="textarea" v-model="userInfo.signature"></el-input>
+				<el-input disabled type="textarea" v-model="userInfo.signature"></el-input>
 			</el-form-item>
 		</el-form>
 

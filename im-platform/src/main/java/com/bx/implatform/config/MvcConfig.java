@@ -24,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/error");
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/logout", "/register", "/refreshToken",
+                .excludePathPatterns("/login", "/thirdLogin", "/logout", "/register", "/refreshToken",
                         "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
     }
 

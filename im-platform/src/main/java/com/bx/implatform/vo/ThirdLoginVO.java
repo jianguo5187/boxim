@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("用户登录VO")
-public class LoginVO {
+@ApiModel("第三方用户登录VO")
+public class ThirdLoginVO {
 
     @ApiModelProperty(value = "每次请求都必须在header中携带accessToken")
     private String accessToken;
@@ -19,4 +19,7 @@ public class LoginVO {
 
     @ApiModelProperty(value = "refreshToken过期时间(秒)")
     private Integer refreshTokenExpiresIn;
+
+    @ApiModelProperty(value = "用户名")
+    private String userName;
 }

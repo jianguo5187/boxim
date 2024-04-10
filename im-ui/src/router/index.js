@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../view/Login'
+import ThirdLogin from '../view/ThirdLogin'
 import Register from '../view/Register'
 import Home from '../view/Home'
 // 安装路由
@@ -8,6 +9,7 @@ Vue.use(VueRouter);
 
 // 配置导出路由
 export default new VueRouter({
+  mode:'history',
   routes: [{
       path: "/", 
       redirect: "/login" 
@@ -16,6 +18,11 @@ export default new VueRouter({
       name: "Login",
       path: '/login',
       component: Login
+    },
+    {
+      name: "ThirdLogin",
+      path: '/thirdLogin',
+      component: ThirdLogin
     },
     {
       name: "Register",

@@ -91,6 +91,11 @@ public class User extends Model<User> {
     @TableField("created_time")
     private Date createdTime;
 
+    /**
+     * 第三方用户id
+     */
+    @TableField("third_user_id")
+    private Long thirdUserId;
 
     @Override
     protected Serializable pkVal() {

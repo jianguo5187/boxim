@@ -11,7 +11,7 @@
  Target Server Version : 50726 (5.7.26)
  File Encoding         : 65001
 
- Date: 09/04/2024 23:35:20
+ Date: 10/04/2024 23:36:47
 */
 
 SET NAMES utf8mb4;
@@ -31,13 +31,15 @@ CREATE TABLE `im_friend`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_friend_id`(`friend_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '好友' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '好友' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_friend
 -- ----------------------------
-INSERT INTO `im_friend` VALUES (1, 2, 1, '测试1', '', '2024-04-09 20:37:33');
+INSERT INTO `im_friend` VALUES (1, 2, 1, '平台客服', 'http://127.0.0.1:9000/box-im/image/20240410/1712762346338.png', '2024-04-09 20:37:33');
 INSERT INTO `im_friend` VALUES (2, 1, 2, '测试2', '', '2024-04-09 20:37:33');
+INSERT INTO `im_friend` VALUES (3, 1, 4, '聊天测试账号1', '', '2024-04-09 23:59:09');
+INSERT INTO `im_friend` VALUES (4, 4, 1, '平台客服', 'http://127.0.0.1:9000/box-im/image/20240410/1712762346338.png', '2024-04-09 23:59:09');
 
 -- ----------------------------
 -- Table structure for im_group
@@ -54,11 +56,12 @@ CREATE TABLE `im_group`  (
   `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否已删除',
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_group
 -- ----------------------------
+INSERT INTO `im_group` VALUES (1, '测试群组', 1, '', '', '', '', 0, '2024-04-10 22:05:00');
 
 -- ----------------------------
 -- Table structure for im_group_member
@@ -77,11 +80,14 @@ CREATE TABLE `im_group_member`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_group_id`(`group_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群成员' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群成员' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_group_member
 -- ----------------------------
+INSERT INTO `im_group_member` VALUES (1, 1, 1, '平台客服', 'http://127.0.0.1:9000/box-im/image/20240410/1712762346338.png', '测试群组', 0, NULL, '2024-04-10 22:05:00');
+INSERT INTO `im_group_member` VALUES (2, 1, 2, '测试2', '', '测试群组', 0, NULL, '2024-04-10 22:05:06');
+INSERT INTO `im_group_member` VALUES (3, 1, 4, '聊天测试账号1', '', '测试群组', 0, NULL, '2024-04-10 22:05:06');
 
 -- ----------------------------
 -- Table structure for im_group_message
@@ -102,11 +108,34 @@ CREATE TABLE `im_group_message`  (
   `send_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_group_id`(`group_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群消息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群消息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_group_message
 -- ----------------------------
+INSERT INTO `im_group_message` VALUES (1, 1, 1, '平台客服', '1,2,4', '\'平台客服\'邀请\'测试2,聊天测试账号1\'加入了群聊', NULL, 0, 0, 21, 0, '2024-04-10 22:05:06');
+INSERT INTO `im_group_message` VALUES (2, 1, 1, '平台客服', '', 'hello', NULL, 0, 0, 0, 0, '2024-04-10 22:05:13');
+INSERT INTO `im_group_message` VALUES (3, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (4, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (5, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (6, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (7, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (8, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (9, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (10, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (11, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (12, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (13, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (14, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (15, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (16, 1, 1, '平台客服', '', '@全体成员 ', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (17, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (18, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (19, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (20, 1, 2, '测试2', '', '#爱心;', NULL, 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (21, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (22, 1, 1, '平台客服', '', '@全体成员 12', '-1', 0, 0, 0, 0, '2024-04-10 22:06:21');
+INSERT INTO `im_group_message` VALUES (23, 1, 1, '平台客服', '', '@全体成员 ', '-1', 0, 0, 0, 0, '2024-04-10 22:06:45');
 
 -- ----------------------------
 -- Table structure for im_private_message
@@ -122,7 +151,7 @@ CREATE TABLE `im_private_message`  (
   `send_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_send_recv_id`(`send_id`, `recv_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '私聊消息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '私聊消息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_private_message
@@ -130,6 +159,11 @@ CREATE TABLE `im_private_message`  (
 INSERT INTO `im_private_message` VALUES (7, 2, 1, '1231', 0, 3, '2024-04-09 22:57:15');
 INSERT INTO `im_private_message` VALUES (8, 1, 2, '{\"originUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712674641591.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712674641591.jpeg\"}', 1, 3, '2024-04-09 22:57:22');
 INSERT INTO `im_private_message` VALUES (9, 2, 1, '{\"originUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712674650603.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712674650603.jpeg\"}', 1, 3, '2024-04-09 22:57:31');
+INSERT INTO `im_private_message` VALUES (10, 1, 4, 'hello', 0, 3, '2024-04-09 23:59:18');
+INSERT INTO `im_private_message` VALUES (11, 4, 1, '{\"originUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712678365110.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712678365110.jpeg\"}', 1, 3, '2024-04-09 23:59:25');
+INSERT INTO `im_private_message` VALUES (12, 1, 4, '{\"originUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712678382552.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9000/box-im/image/20240409/1712678382552.jpeg\"}', 1, 3, '2024-04-09 23:59:43');
+INSERT INTO `im_private_message` VALUES (13, 4, 1, '#爱心;', 0, 3, '2024-04-09 23:59:50');
+INSERT INTO `im_private_message` VALUES (14, 2, 1, '123', 0, 3, '2024-04-10 22:02:49');
 
 -- ----------------------------
 -- Table structure for im_user
@@ -147,16 +181,18 @@ CREATE TABLE `im_user`  (
   `signature` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '个性签名',
   `last_login_time` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `third_user_id` bigint(20) NULL DEFAULT NULL COMMENT '第三方用户id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_user_name`(`user_name`) USING BTREE,
   INDEX `idx_nick_name`(`nick_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of im_user
 -- ----------------------------
-INSERT INTO `im_user` VALUES (1, 'lxh1', '测试1', '', '', '$2a$10$z2dG2VGv728.g7C2sPtlg.0S1qsgYAOxtTbVRd.7y7bVq2aWma8a6', 0, 1, '', NULL, '2024-04-09 20:18:54');
-INSERT INTO `im_user` VALUES (2, 'lxh2', '测试2', '', '', '$2a$10$Zx.3MGTvRiwF/SVSPaNc1u91rpFpNaCl2xau5h.gOcH7H5jrH74Py', 0, 1, '', NULL, '2024-04-09 20:37:07');
-INSERT INTO `im_user` VALUES (3, 'lxh3', '测试3', '', '', '$2a$10$CkfptRrYTrsMQfYW5XxCeuxoq6oErgOjbvQyqG0bsG1xseb7hoKim', 0, 1, '', NULL, '2024-04-09 21:14:12');
+INSERT INTO `im_user` VALUES (1, 'lxh1', '平台客服', 'http://127.0.0.1:9000/box-im/image/20240410/1712762346338.png', 'http://127.0.0.1:9000/box-im/image/20240410/1712762346338.png', '$2a$10$z2dG2VGv728.g7C2sPtlg.0S1qsgYAOxtTbVRd.7y7bVq2aWma8a6', 0, 2, '', NULL, '2024-04-09 20:18:54', 1);
+INSERT INTO `im_user` VALUES (2, 'lxh2', '测试2', '', '', '$2a$10$Zx.3MGTvRiwF/SVSPaNc1u91rpFpNaCl2xau5h.gOcH7H5jrH74Py', 0, 1, '', NULL, '2024-04-09 20:37:07', 2);
+INSERT INTO `im_user` VALUES (3, 'lxh3', '测试3', '', '', '$2a$10$CkfptRrYTrsMQfYW5XxCeuxoq6oErgOjbvQyqG0bsG1xseb7hoKim', 0, 1, '', NULL, '2024-04-09 21:14:12', 3);
+INSERT INTO `im_user` VALUES (4, 'ceshi1', '聊天测试账号1', '', '', '$2a$10$gkuegoiIEMIIZLT2Dgxw7uE3ARCEOdjM52BH3NGVot316INjLmMfq', 0, 1, '', NULL, '2024-04-09 23:58:12', 4);
 
 SET FOREIGN_KEY_CHECKS = 1;

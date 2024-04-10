@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.bx.implatform.dto.LoginDTO;
 import com.bx.implatform.dto.ModifyPwdDTO;
 import com.bx.implatform.dto.RegisterDTO;
+import com.bx.implatform.dto.ThirdLoginDTO;
 import com.bx.implatform.entity.User;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;
+import com.bx.implatform.vo.ThirdLoginVO;
 import com.bx.implatform.vo.UserVO;
 
 import java.util.List;
@@ -20,6 +22,14 @@ public interface IUserService extends IService<User> {
      * @return 登录token
      */
     LoginVO login(LoginDTO dto);
+
+    /**
+     * 第三方用户登录
+     *
+     * @param dto 登录dto
+     * @return 登录token
+     */
+    ThirdLoginVO thirdLogin(ThirdLoginDTO dto);
 
     /**
      * 修改用户密码
@@ -50,6 +60,14 @@ public interface IUserService extends IService<User> {
      * @return 用户信息
      */
     User findUserByUserName(String username);
+
+    /**
+     * 根据第三方ID查询用户
+     *
+     * @param thirdUserId 第三方ID
+     * @return 用户信息
+     */
+    User findUserByThirdUserId(Long thirdUserId);
 
     /**
      * 更新用户信息，好友昵称和群聊昵称等冗余信息也会更新

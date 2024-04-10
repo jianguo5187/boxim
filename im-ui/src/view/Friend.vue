@@ -7,7 +7,7 @@
 						<el-button slot="append" icon="el-icon-search"></el-button>
 					</el-input>
 				</div>
-				<el-button plain icon="el-icon-plus" style="border: none; padding:12px; font-size: 20px;color: black;"
+				<el-button plain icon="el-icon-plus" style="border: none; padding:12px; font-size: 20px;color: black;" v-if="this.$store.state.userStore.userInfo.id==1?true:false"
 					title="添加好友" @click="onShowAddFriend()"></el-button>
 				<add-friend :dialogVisible="showAddFriend" @close="onCloseAddFriend">
 				</add-friend>
@@ -73,12 +73,27 @@
 		data() {
 			return {
 				searchText: "",
+        addFriendVisible: false,
 				showAddFriend: false,
 				activeIdx: -1,
 				userInfo: {}
 			}
 		},
 		methods: {
+      loadLoginUserInfo() {
+        this.$store.dispatch("load").then(() => {
+          this.$http({
+            url: `/user/find/${this.$store.state.userStore.userInfo.id}`,
+            method: 'get'
+          }).then((user) => {
+            if(user.type == 1){
+              this.addFriendVisible = false;
+            }else{
+              this.addFriendVisible = true;
+            }
+          });
+        });
+      },
 			onShowAddFriend() {
 				this.showAddFriend = true;
 			},
@@ -168,6 +183,9 @@
 				})
 			}
 		},
+    mounted() {
+      this.loadLoginUserInfo();
+    },
 		computed: {
 			friendStore() {
 				return this.$store.state.friendStore;
