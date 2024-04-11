@@ -24,10 +24,10 @@
 			<view class="info-arrow">></view>
 		</view>
 		<view class="line"></view>
-		<view class="btn-group">
+		<!-- <view class="btn-group">
 			<button class="btn" type="primary" @click="onModifyPassword()">修改密码</button>
 			<button class="btn" type="warn" @click="onQuit()">退出</button>
-		</view>
+		</view> -->
 	</view>
 </template>
 

@@ -16,7 +16,7 @@
 				// 加载数据
 				store.dispatch("load").then(() => {
 					// 审核
-					this.initAudit();
+					// this.initAudit();
 					// 初始化websocket
 					this.initWebSocket();
 				}).catch((e) => {

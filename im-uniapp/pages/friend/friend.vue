@@ -4,13 +4,13 @@
 			<view class="nav-search">
 				<uni-search-bar @focus="onFocusSearch" cancelButton="none" placeholder="点击搜索好友" ></uni-search-bar>
 			</view>
-			<view  class="nav-add" @click="onAddNewFriends()">
+			<!-- <view  class="nav-add" @click="onAddNewFriends()">
 				<uni-icons type="personadd" size="30"></uni-icons>
-			</view>
+			</view> -->
 		</view>
-		<view class="friend-tip" v-if="$store.state.friendStore.friends.length==0">
+		<!-- <view class="friend-tip" v-if="$store.state.friendStore.friends.length==0">
 			温馨提示：您现在还没有任何好友，快点击右上方'+'按钮添加好友吧~
-		</view>
+		</view> -->
 		<view class="friend-items" v-else>
 			<scroll-view class="scroll-bar" scroll-with-animation="true" scroll-y="true">
 				<view v-for="(friend,index) in $store.state.friendStore.friends" :key="index">

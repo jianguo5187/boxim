@@ -26,7 +26,7 @@
 		<view class="btn-group">
 			<button class="btn" v-show="isFriend" type="primary" @click="onSendMessage()">发消息</button>
 			<button class="btn" v-show="!isFriend" type="primary" @click="onAddFriend()">加为好友</button>
-			<button class="btn" v-show="isFriend" type="warn" @click="onDelFriend()">删除好友</button>
+			<!-- <button class="btn" v-show="isFriend" type="warn" @click="onDelFriend()">删除好友</button> -->
 		</view>
 	</view>
 </template>
