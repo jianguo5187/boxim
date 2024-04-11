@@ -41,7 +41,6 @@
 		},
 		methods: {
 			autoLogin() {
-				
 				// 获取URL中的查询字符串部分
 				const queryParams = new URLSearchParams(window.location.search);
 		
