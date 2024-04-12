@@ -1,0 +1,18 @@
+server:
+  port: 8877
+websocket:
+  port: 8878
+spring:
+  redis:
+    host: localhost
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password: 123456
+jwt:
+  accessToken:
+    secret: ztcv8qKGHV  # 跟im-platfrom的secret必须一致
+logging:
+  config: classpath:logback-prod.xml
