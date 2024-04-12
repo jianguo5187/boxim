@@ -54,4 +54,14 @@ public interface IFriendService extends IService<Friend> {
      * @return 好友信息
      */
     FriendVO findFriend(Long friendId);
+
+
+
+    /**
+     * 客服添加好友，互相建立好友关系
+     *
+     * @param friendId 好友的用户id
+     */
+    void addKefuFriend(Long kefuUserId, Long friendId);
+
 }

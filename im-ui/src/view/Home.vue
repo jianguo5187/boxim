@@ -19,18 +19,18 @@
 						<span class="el-icon-user"></span>
 					</router-link>
 				</el-menu-item>
-				<el-menu-item title="群聊" v-if="this.groupChatVisible">
-					<router-link v-bind:to="'/home/group'">
-						<span class="icon iconfont icon-group_fill"></span>
-					</router-link>
-				</el-menu-item>
+<!--				<el-menu-item title="群聊" v-if="this.groupChatVisible">-->
+<!--					<router-link v-bind:to="'/home/group'">-->
+<!--						<span class="icon iconfont icon-group_fill"></span>-->
+<!--					</router-link>-->
+<!--				</el-menu-item>-->
 				<el-menu-item title="设置" @click="showSetting()">
 					<span class="el-icon-setting"></span>
 				</el-menu-item>
 			</el-menu>
-<!--			<div class="exit-box" @click="onExit()" title="退出">-->
-<!--				<span class="icon iconfont icon-exit"></span>-->
-<!--			</div>-->
+			<div class="exit-box" @click="onExit()" title="退出">
+				<span class="icon iconfont icon-exit"></span>
+			</div>
 		</el-aside>
 		<el-main class="content-box">
 			<router-view></router-view>
@@ -66,26 +66,23 @@
 			return {
 				showSettingDialog: false,
 				lastPlayAudioTime: new Date().getTime() - 1000,
-        groupChatVisible: false,
-        loginUserId:this.$store.state.userStore.userInfo.id
 			}
 		},
 		methods: {
-      loadLoginUserInfo() {
-        this.$http({
-          url: `/user/find/${this.$store.state.userStore.userInfo.id}`,
-          method: 'get'
-        }).then((user) => {
-          if(user.type == 1){
-            this.groupChatVisible = false;
-          }else{
-            this.groupChatVisible = true;
-          }
-        })
-      },
+      // loadLoginUserInfo() {
+      //   this.$http({
+      //     url: `/user/find/${this.$store.state.userStore.userInfo.id}`,
+      //     method: 'get'
+      //   }).then((user) => {
+      //     if(user.type == 1){
+      //       this.groupChatVisible = false;
+      //     }else{
+      //       this.groupChatVisible = true;
+      //     }
+      //   })
+      // },
 			init() {
 				this.$store.dispatch("load").then(() => {
-          this.loadLoginUserInfo();
 					// ws初始化
 					this.$wsApi.connect(process.env.VUE_APP_WS_URL, sessionStorage.getItem("accessToken"));
 					this.$wsApi.onConnect(() => {

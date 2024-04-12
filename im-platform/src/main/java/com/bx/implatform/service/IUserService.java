@@ -67,7 +67,7 @@ public interface IUserService extends IService<User> {
      * @param thirdUserId 第三方ID
      * @return 用户信息
      */
-    User findUserByThirdUserId(Long thirdUserId);
+    User findUserByThirdUserId(String thirdUserId);
 
     /**
      * 更新用户信息，好友昵称和群聊昵称等冗余信息也会更新
@@ -91,6 +91,14 @@ public interface IUserService extends IService<User> {
      * @return 用户列表
      */
     List<UserVO> findUserByName(String name);
+
+    /**
+     * 根据用户类型查询用户列表
+     *
+     * @param userType 用户类型
+     * @return 用户列表
+     */
+    List<User> findUserByType(Integer userType);
 
     /**
      * 获取用户在线的终端类型

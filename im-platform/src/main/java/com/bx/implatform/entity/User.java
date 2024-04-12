@@ -95,7 +95,7 @@ public class User extends Model<User> {
      * 第三方用户id
      */
     @TableField("third_user_id")
-    private Long thirdUserId;
+    private String thirdUserId;
 
     @Override
     protected Serializable pkVal() {

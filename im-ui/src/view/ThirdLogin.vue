@@ -18,7 +18,10 @@
 			return {
         thirdLoginForm: {
           terminal: this.$enums.TERMINAL_TYPE.WEB,
-          thirdUserId: null
+          thirdUserId: null,
+          userName: null,
+          nickName: null,
+          signature: null,
         },
 				rules: {}
 			};
@@ -30,7 +33,10 @@
 
         // 获取参数
         this.thirdLoginForm.thirdUserId = queryParams.get('userId');
-        this.thirdLoginForm.terminal = queryParams.get('terminal');
+        this.thirdLoginForm.userName = queryParams.get('userName');
+        this.thirdLoginForm.nickName = queryParams.get('nickName');
+        this.thirdLoginForm.signature = queryParams.get('signature');
+        // this.thirdLoginForm.terminal = queryParams.get('terminal');
 
         // 使用参数
         this.$http({

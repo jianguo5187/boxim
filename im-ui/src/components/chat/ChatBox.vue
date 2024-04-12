@@ -306,12 +306,18 @@ export default {
 				msgInfo.loadStatus = 'ok';
 				msgInfo.id = id;
 				this.isReceipt = false;
+        console.log('onImageSuccess');
 				this.$store.commit("insertMessage", msgInfo);
+        // 会话置顶
+        this.moveChatToTop();
+        // 滚动到底部
+        this.scrollToBottom();
 			})
 		},
 		onImageFail(e, file) {
 			let msgInfo = JSON.parse(JSON.stringify(file.msgInfo));
 			msgInfo.loadStatus = 'fail';
+      console.log('onImageFail');
 			this.$store.commit("insertMessage", msgInfo);
 		},
 		onImageBefore(file) {
@@ -335,7 +341,8 @@ export default {
 			// 填充对方id
 			this.fillTargetId(msgInfo, this.chat.targetId);
 			// 插入消息
-			this.$store.commit("insertMessage", msgInfo);
+      console.log('onImageBefore');
+			// this.$store.commit("insertMessage", msgInfo);
 			// 会话置顶
 			this.moveChatToTop();
 			// 滚动到底部
@@ -360,12 +367,14 @@ export default {
 				msgInfo.loadStatus = 'ok';
 				msgInfo.id = id;
 				this.isReceipt = false;
+        console.log('onFileSuccess');
 				this.$store.commit("insertMessage", msgInfo);
 			})
 		},
 		onFileFail(e, file) {
 			let msgInfo = JSON.parse(JSON.stringify(file.msgInfo));
 			msgInfo.loadStatus = 'fail';
+      console.log('onFileFail');
 			this.$store.commit("insertMessage", msgInfo);
 		},
 		onFileBefore(file) {
@@ -389,6 +398,7 @@ export default {
 			// 填充对方id
 			this.fillTargetId(msgInfo, this.chat.targetId);
 			// 插入消息
+      console.log('onFileBefore');
 			this.$store.commit("insertMessage", msgInfo);
 			// 会话置顶
 			this.moveChatToTop();
@@ -481,6 +491,7 @@ export default {
 				msgInfo.selfSend = true;
 				msgInfo.status = this.$enums.MESSAGE_STATUS.UNSEND;
 				msgInfo.readedCount = 0;
+        console.log('onSendVoice');
 				this.$store.commit("insertMessage", msgInfo);
 				// 会话置顶
 				this.moveChatToTop();
@@ -558,6 +569,7 @@ export default {
 				msgInfo.selfSend = true;
 				msgInfo.readedCount = 0;
 				msgInfo.status = this.$enums.MESSAGE_STATUS.UNSEND;
+        console.log('sendTextMessage');
 				this.$store.commit("insertMessage", msgInfo);
 				// 会话置顶
 				this.moveChatToTop();
@@ -595,6 +607,7 @@ export default {
 					msgInfo.type = 10;
 					msgInfo.content = '你撤回了一条消息';
 					msgInfo.status = this.$enums.MESSAGE_STATUS.RECALL;
+          console.log('recallMessage');
 					this.$store.commit("insertMessage", msgInfo);
 				})
 			});

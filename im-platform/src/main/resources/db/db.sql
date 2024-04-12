@@ -11,7 +11,7 @@
  Target Server Version : 50726 (5.7.26)
  File Encoding         : 65001
 
- Date: 09/04/2024 21:05:58
+ Date: 12/04/2024 21:19:04
 */
 
 SET NAMES utf8mb4;
@@ -31,13 +31,11 @@ CREATE TABLE `im_friend`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_friend_id`(`friend_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '好友' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '好友' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_friend
 -- ----------------------------
-INSERT INTO `im_friend` VALUES (1, 2, 1, '测试1', '', '2024-04-09 20:37:33');
-INSERT INTO `im_friend` VALUES (2, 1, 2, '测试2', '', '2024-04-09 20:37:33');
 
 -- ----------------------------
 -- Table structure for im_group
@@ -54,7 +52,7 @@ CREATE TABLE `im_group`  (
   `deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否已删除',
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_group
@@ -77,7 +75,7 @@ CREATE TABLE `im_group_member`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_group_id`(`group_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群成员' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群成员' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_group_member
@@ -102,7 +100,7 @@ CREATE TABLE `im_group_message`  (
   `send_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_group_id`(`group_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群消息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '群消息' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_group_message
@@ -122,15 +120,11 @@ CREATE TABLE `im_private_message`  (
   `send_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_send_recv_id`(`send_id`, `recv_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '私聊消息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '私聊消息' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_private_message
 -- ----------------------------
-INSERT INTO `im_private_message` VALUES (1, 2, 1, '123', 0, 3, '2024-04-09 20:37:44');
-INSERT INTO `im_private_message` VALUES (2, 1, 2, '3333', 0, 3, '2024-04-09 20:37:51');
-INSERT INTO `im_private_message` VALUES (3, 1, 2, '{\"originUrl\":\"http://127.0.0.1:9001/box-im/image/20240409/1712666326874.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9001/box-im/image/20240409/1712666326874.jpeg\"}', 1, 3, '2024-04-09 20:38:47');
-INSERT INTO `im_private_message` VALUES (4, 1, 2, '{\"originUrl\":\"http://127.0.0.1:9001/box-im/image/20240409/1712666358399.jpeg\",\"thumbUrl\":\"http://127.0.0.1:9001/box-im/image/20240409/1712666358399.jpeg\"}', 1, 3, '2024-04-09 20:39:19');
 
 -- ----------------------------
 -- Table structure for im_user
@@ -144,19 +138,20 @@ CREATE TABLE `im_user`  (
   `head_image_thumb` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '用户头像缩略图',
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码(明文)',
   `sex` tinyint(1) NULL DEFAULT 0 COMMENT '性别 0:男 1:女',
-  `type` smallint(6) NULL DEFAULT 1 COMMENT '用户类型 1:普通用户 2:审核账户',
+  `type` smallint(6) NULL DEFAULT 1 COMMENT '用户类型 1:客服用户 2:普通用户',
   `signature` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '个性签名',
   `last_login_time` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
   `created_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `third_user_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '第三方用户uuid',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_user_name`(`user_name`) USING BTREE,
   INDEX `idx_nick_name`(`nick_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of im_user
 -- ----------------------------
-INSERT INTO `im_user` VALUES (1, 'lxh1', '测试1', '', '', '$2a$10$z2dG2VGv728.g7C2sPtlg.0S1qsgYAOxtTbVRd.7y7bVq2aWma8a6', 0, 1, '', NULL, '2024-04-09 20:18:54');
-INSERT INTO `im_user` VALUES (2, 'lxh2', '测试2', '', '', '$2a$10$Zx.3MGTvRiwF/SVSPaNc1u91rpFpNaCl2xau5h.gOcH7H5jrH74Py', 0, 1, '', NULL, '2024-04-09 20:37:07');
+INSERT INTO `im_user` VALUES (1, 'kefu1', '充值客服账号1', '', '', '$2a$10$z2dG2VGv728.g7C2sPtlg.0S1qsgYAOxtTbVRd.7y7bVq2aWma8a6', 0, 1, '', NULL, '2024-04-09 20:18:54', NULL);
+INSERT INTO `im_user` VALUES (2, 'kefu2', '充值客服账号2', '', '', '$2a$10$Zx.3MGTvRiwF/SVSPaNc1u91rpFpNaCl2xau5h.gOcH7H5jrH74Py', 0, 1, '', NULL, '2024-04-09 20:37:07', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

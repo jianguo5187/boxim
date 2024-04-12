@@ -28,8 +28,8 @@
 			</scroll-view>
 		</view>
 		<view class="send-bar">
-			<view v-if="!showRecord" class="iconfont icon-voice-circle" @click="onRecorderInput()"></view>
-			<view v-else class="iconfont icon-keyboard" @click="onKeyboardInput()"></view>
+			<!-- <view v-if="!showRecord" class="iconfont icon-voice-circle" @click="onRecorderInput()"></view>
+			<view v-else class="iconfont icon-keyboard" @click="onKeyboardInput()"></view> -->
 			<chat-record v-if="showRecord" class="chat-record" @send="onSendRecord" ></chat-record>
 			<view v-else class="send-text">
 				<textarea class="send-text-area" v-model="sendText" auto-height :show-confirm-bar="false"
@@ -71,24 +71,24 @@
 					<view class="tool-name">文件</view>
 				</view>
 				<!-- #endif -->
-				<view class="chat-tools-item" @click="onVoiceInput()">
+				<!-- <view class="chat-tools-item" @click="onVoiceInput()">
 					<view class="tool-icon iconfont icon-microphone"></view>
 					<view class="tool-name">语音消息</view>
 				</view>
 				<view v-if="chat.type == 'GROUP'" class="chat-tools-item" @click="switchReceipt()">
 					<view class="tool-icon iconfont icon-receipt" :class="isReceipt?'active':''"></view>
 					<view class="tool-name">回执消息</view>
-				</view>
+				</view> -->
 				<!-- #ifndef MP-WEIXIN -->
 				<!-- 音视频不支持小程序 -->
-				<view v-if="chat.type == 'PRIVATE'" class="chat-tools-item" @click="onVideoCall()">
+				<!-- <view v-if="chat.type == 'PRIVATE'" class="chat-tools-item" @click="onVideoCall()">
 					<view class="tool-icon iconfont icon-video"></view>
 					<view class="tool-name">视频通话</view>
 				</view>
 				<view v-if="chat.type == 'PRIVATE'" class="chat-tools-item" @click="onVoiceCall()">
 					<view class="tool-icon iconfont icon-call"></view>
 					<view class="tool-name">语音通话</view>
-				</view>
+				</view> -->
 				<!-- #endif -->
 			</view>
 			<scroll-view v-if="chatTabBox==='emo'" class="chat-emotion" scroll-y="true">
@@ -354,7 +354,7 @@
 				// 填充对方id
 				this.fillTargetId(msgInfo, this.chat.targetId);
 				// 插入消息
-				this.$store.commit("insertMessage", msgInfo);
+				// this.$store.commit("insertMessage", msgInfo);
 				// 会话置顶
 				this.moveChatToTop();
 				// 借助file对象保存
@@ -376,6 +376,10 @@
 					msgInfo.id = id;
 					this.isReceipt = false;
 					this.$store.commit("insertMessage", msgInfo);
+					// 会话置顶
+					this.moveChatToTop();
+					// 滚到最低部
+					this.scrollToBottom();
 				})
 			},
 			onUploadImageFail(file, err) {

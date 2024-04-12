@@ -102,6 +102,16 @@
 				}
 			}
 		},
+		mounted() {
+		  setTimeout(() => {
+			if(this.chatStore.chats.length == 0){
+				// 跳转到好友页面   
+				uni.switchTab({
+					url: "/pages/friend/friend"
+				})
+			}
+		  }, 500);
+		},
 		computed: {
 			chatStore() {
 				return this.$store.state.chatStore;

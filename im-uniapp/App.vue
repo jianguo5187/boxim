@@ -4,7 +4,7 @@
 	import * as enums from './common/enums';
 	import * as wsApi from './common/wssocket';
 	import UNI_APP from '@/.env.js'
-	
+
 	export default {
 		data() {
 			return {
@@ -90,7 +90,9 @@
 				}
 				// 消息回执处理,改消息状态为已读
 				if (msg.type == enums.MESSAGE_TYPE.RECEIPT) {
-					store.commit("readedMessage", { friendId: msg.sendId })
+					store.commit("readedMessage", {
+						friendId: msg.sendId
+					})
 					return;
 				}
 				// 标记这条消息是不是自己发的
@@ -107,16 +109,16 @@
 				if (msg.type >= enums.MESSAGE_TYPE.RTC_CALL_VOICE &&
 					msg.type <= enums.MESSAGE_TYPE.RTC_CANDIDATE) {
 					// #ifdef MP-WEIXIN
-						// 小程序不支持音视频
-						return;
+					// 小程序不支持音视频
+					return;
 					// #endif
 					// 被呼叫，弹出视频页面
-					if(msg.type == enums.MESSAGE_TYPE.RTC_CALL_VOICE 
-						|| msg.type == enums.MESSAGE_TYPE.RTC_CALL_VIDEO){
-						let mode = 	msg.type == enums.MESSAGE_TYPE.RTC_CALL_VIDEO? "video":"voice";
+					if (msg.type == enums.MESSAGE_TYPE.RTC_CALL_VOICE ||
+						msg.type == enums.MESSAGE_TYPE.RTC_CALL_VIDEO) {
+						let mode = msg.type == enums.MESSAGE_TYPE.RTC_CALL_VIDEO ? "video" : "voice";
 						let pages = getCurrentPages();
-						let curPage = pages[pages.length-1].route;
-						if(curPage != "pages/chat/chat-video"){
+						let curPage = pages[pages.length - 1].route;
+						if (curPage != "pages/chat/chat-video") {
 							const friendInfo = encodeURIComponent(JSON.stringify(friend));
 							uni.navigateTo({
 								url: `/pages/chat/chat-video?mode=${mode}&friend=${friendInfo}&isHost=false`
@@ -124,8 +126,8 @@
 						}
 					}
 					setTimeout(() => {
-						uni.$emit('WS_RTC',msg);
-					},500)
+						uni.$emit('WS_RTC', msg);
+					}, 500)
 					return;
 				}
 
@@ -146,7 +148,7 @@
 			handleGroupMessage(msg) {
 				// 消息加载标志
 				if (msg.type == enums.MESSAGE_TYPE.LOADDING) {
-					store.commit("loadingGroupMsg",JSON.parse(msg.content))
+					store.commit("loadingGroupMsg", JSON.parse(msg.content))
 					return;
 				}
 				// 消息已读处理
@@ -256,7 +258,13 @@
 				}
 			}
 		},
-		onLaunch() {
+		onLaunch(e) {
+			if (e.query.terminal == 1) {
+				uni.navigateTo({
+					url: "/pages/login/autoLogin?item="+ encodeURIComponent(JSON.stringify(e.query))
+				})
+				return
+			}
 			// 登录状态校验
 			if (uni.getStorageSync("loginInfo")) {
 				// 初始化
@@ -267,6 +275,7 @@
 					url: "/pages/login/login"
 				})
 			}
+
 		}
 	}
 </script>

@@ -3,7 +3,7 @@
 		<uni-forms ref="form" :modelValue="userInfo" label-position="top"
 			label-width="100%">
 			<uni-forms-item label="头像:" name="headImage">
-				<image-upload :onSuccess="onUnloadImageSuccess" :disabled="true" >
+				<image-upload :onSuccess="onUnloadImageSuccess" >
 					<image :src="userInfo.headImageThumb" class="head-image"></image>
 				</image-upload>
 			</uni-forms-item>
@@ -11,7 +11,7 @@
 				<uni-easyinput type="text" v-model="userInfo.userName" :disabled="true" />
 			</uni-forms-item>
 			<uni-forms-item label="昵称:" name="nickName">
-				<uni-easyinput v-model="userInfo.nickName" type="text" :placeholder="userInfo.userName" :disabled="true" />
+				<uni-easyinput v-model="userInfo.nickName" type="text" :placeholder="userInfo.userName" />
 			</uni-forms-item>
 			<!-- <uni-forms-item label="性别:" name="sex">
 				<radio-group @change="onSexchange">
@@ -20,7 +20,7 @@
 				</radio-group>
 			</uni-forms-item> -->
 			<uni-forms-item label="签名:" name="signature">
-				<uni-easyinput type="textarea" v-model="userInfo.signature" placeholder="编辑个性标签,展示我的独特态度" :disabled="true" />
+				<uni-easyinput type="textarea" v-model="userInfo.signature" placeholder="编辑个性标签,展示我的独特态度" />
 			</uni-forms-item>
 		</uni-forms>
 		<button type="primary" @click="onSubmit()">提交</button>

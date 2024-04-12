@@ -53,11 +53,20 @@
 				this.$store.commit("moveTop", chatIdx);
 			},
 		},
+    mounted() {
+      setTimeout(() => {
+        if(this.chatStore.chats.length == 0){
+          this.$router.push("/home/friend");
+        }
+      }, 1000);
+    },
 		computed: {
 			chatStore() {
+        console.log(1);
 				return this.$store.state.chatStore;
 			},
 			loading(){
+        console.log(2);
 				return this.chatStore.loadingGroupMsg || this.chatStore.loadingPrivateMsg
 			}
 		}

@@ -7,10 +7,10 @@
 						<el-button slot="append" icon="el-icon-search"></el-button>
 					</el-input>
 				</div>
-				<el-button plain icon="el-icon-plus" style="border: none; padding:12px; font-size: 20px;color: black;" v-if="this.$store.state.userStore.userInfo.id==1?true:false"
-					title="添加好友" @click="onShowAddFriend()"></el-button>
-				<add-friend :dialogVisible="showAddFriend" @close="onCloseAddFriend">
-				</add-friend>
+<!--				<el-button plain icon="el-icon-plus" style="border: none; padding:12px; font-size: 20px;color: black;" v-if="this.$store.state.userStore.userInfo.id==1?true:false"-->
+<!--					title="添加好友" @click="onShowAddFriend()"></el-button>-->
+<!--				<add-friend :dialogVisible="showAddFriend" @close="onCloseAddFriend">-->
+<!--				</add-friend>-->
 			</div>
 			<el-scrollbar class="friend-list-items">
 				<div v-for="(friend,index) in $store.state.friendStore.friends" :key="index">
@@ -45,8 +45,8 @@
 						</div>
 						<div class="frient-btn-group">
 							<el-button v-show="isFriend" icon="el-icon-chat-dot-round" type="primary"  @click="onSendMessage(userInfo)">发送消息</el-button>
-							<el-button v-show="!isFriend" icon="el-icon-plus" type="primary"  @click="onAddFriend(userInfo)">加为好友</el-button>
-							<el-button v-show="isFriend" icon="el-icon-delete"  type="danger" @click="onDelItem(userInfo,activeIdx)">删除好友</el-button>
+<!--							<el-button v-show="!isFriend" icon="el-icon-plus" type="primary"  @click="onAddFriend(userInfo)">加为好友</el-button>-->
+<!--							<el-button v-show="isFriend" icon="el-icon-delete"  type="danger" @click="onDelItem(userInfo,activeIdx)">删除好友</el-button>-->
 						</div>
 					</div>
 				</div>
@@ -80,20 +80,20 @@
 			}
 		},
 		methods: {
-      loadLoginUserInfo() {
-        this.$store.dispatch("load").then(() => {
-          this.$http({
-            url: `/user/find/${this.$store.state.userStore.userInfo.id}`,
-            method: 'get'
-          }).then((user) => {
-            if(user.type == 1){
-              this.addFriendVisible = false;
-            }else{
-              this.addFriendVisible = true;
-            }
-          });
-        });
-      },
+      // loadLoginUserInfo() {
+      //   this.$store.dispatch("load").then(() => {
+      //     this.$http({
+      //       url: `/user/find/${this.$store.state.userStore.userInfo.id}`,
+      //       method: 'get'
+      //     }).then((user) => {
+      //       if(user.type == 1){
+      //         this.addFriendVisible = false;
+      //       }else{
+      //         this.addFriendVisible = true;
+      //       }
+      //     });
+      //   });
+      // },
 			onShowAddFriend() {
 				this.showAddFriend = true;
 			},
@@ -183,9 +183,9 @@
 				})
 			}
 		},
-    mounted() {
-      this.loadLoginUserInfo();
-    },
+    // mounted() {
+    //   this.loadLoginUserInfo();
+    // },
 		computed: {
 			friendStore() {
 				return this.$store.state.friendStore;

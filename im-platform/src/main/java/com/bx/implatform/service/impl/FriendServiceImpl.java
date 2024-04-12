@@ -157,4 +157,12 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
         vo.setNickName(friend.getFriendNickName());
         return vo;
     }
+
+    @Override
+    public void addKefuFriend(Long kefuUserId, Long friendId) {
+        // 互相绑定好友关系
+        FriendServiceImpl proxy = (FriendServiceImpl) AopContext.currentProxy();
+        proxy.bindFriend(kefuUserId, friendId);
+        proxy.bindFriend(friendId, kefuUserId);
+    }
 }

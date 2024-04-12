@@ -3,6 +3,7 @@ package com.bx.implatform.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
@@ -35,6 +36,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,7 +80,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public ThirdLoginVO thirdLogin(ThirdLoginDTO dto) {
         User user = this.findUserByThirdUserId(dto.getThirdUserId());
         if (null == user) {
-            throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
+            // 创建一个新的用户
+            user = new User();
+            user = BeanUtils.copyProperties(dto, User.class);
+            user.setType(2);
+            user.setPassword(passwordEncoder.encode("123456"));
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            String formattedString = now.format(formatter);
+
+            if(StringUtils.isEmpty(user.getUserName())){
+                //用户登录名为空
+                user.setUserName("U"+formattedString);
+            }
+            if(StringUtils.isEmpty(user.getNickName())){
+                //昵称为空
+                user.setNickName("temp_"+formattedString);
+            }
+            this.save(user);
+
+            // 给客服账号自动添加好友
+            List<User> kefuUserList = this.findUserByType(1);
+            for(User kefuUser: kefuUserList){
+                friendService.addKefuFriend(kefuUser.getId(),user.getId());
+            }
         }
         // 生成token
         UserSession session = BeanUtils.copyProperties(user, UserSession.class);
@@ -145,7 +172,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public User findUserByThirdUserId(Long thirdUserId) {
+    public User findUserByThirdUserId(String thirdUserId) {
         LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getThirdUserId, thirdUserId);
         return this.getOne(queryWrapper);
@@ -211,6 +238,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             vo.setOnline(onlineUserIds.contains(u.getId()));
             return vo;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findUserByType(Integer userType) {
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(User::getType, userType);
+        return this.list(queryWrapper);
     }
 
     @Override

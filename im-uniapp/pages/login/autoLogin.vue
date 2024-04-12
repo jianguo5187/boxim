@@ -1,15 +1,6 @@
 <template>
 	<view class="login-form">
-		<view class="login-title">跳转中</view>
-		<!-- <uni-forms style="margin-top: 100px;" :modelValue="loginForm" :rules="rules" validate-trigger="bind">
-			<uni-forms-item name="userName">
-				<uni-easyinput type="text" v-model="loginForm.userName" prefix-icon="person" focus placeholder="用户名" />
-			</uni-forms-item>
-			<uni-forms-item name="password">
-				<uni-easyinput type="password" v-model="loginForm.password" prefix-icon="locked" placeholder="密码" />
-			</uni-forms-item>
-			<button @click="submit" type="primary">登录</button>
-		</uni-forms> -->
+		<view class="login-title">登录中</view>
 	</view>
 </template>
 
@@ -17,37 +8,29 @@
 	export default {
 		data() {
 			return {
+				info:'',
 				loginForm: {
 					terminal: 1, // APP终端
-					thirdUserId: ''
-					// userName: '',
-					// password: ''
+					thirdUserId: '',
+					userName: null,
+					nickName: null,
+					signature: null,
 				},
 				rules: {
-					// userName: {
-					// 	rules: [{
-					// 		required: true,
-					// 		errorMessage: '请输入用户名',
-					// 	}]
-					// },
-					// password: {
-					// 	rules: [{
-					// 		required: true,
-					// 		errorMessage: '请输入密码',
-					// 	}]
-					// }
 				}
 			}
 		},
 		methods: {
-			autoLogin() {
+		},
+		onLoad(e) {
+			this.info = JSON.parse(decodeURIComponent(e.item));
+			console.log('获取的参数',this.info);
+			setTimeout(() => {
 				// 获取URL中的查询字符串部分
-				const queryParams = new URLSearchParams(window.location.search);
-		
-				// 获取参数
-				this.loginForm.thirdUserId = queryParams.get('userId');
-				this.loginForm.terminal = queryParams.get('terminal');
-				
+				this.loginForm.thirdUserId = this.info.userId
+				this.loginForm.userName = this.info.userName
+				this.loginForm.nickName = this.info.nickName
+				this.loginForm.signature = this.info.signature
 				this.$http({
 					url: '/thirdLogin',
 					data: this.loginForm,
@@ -64,20 +47,7 @@
 						url: "/pages/chat/chat"
 					})
 				})
-			}
-		},
-		onLoad() {
-			this.autoLogin();
-			// this.loginForm.userName = uni.getStorageSync("userName");
-			// this.loginForm.password = uni.getStorageSync("password");
-			// let loginInfo = uni.getStorageSync("loginInfo");
-			// if (loginInfo) {
-			// 	// 跳转到聊天页面
-			// 	uni.switchTab({
-			// 		url: "/pages/chat/chat"
-			// 	})
-				
-			// }
+			}, 0)
 		}
 	}
 </script>

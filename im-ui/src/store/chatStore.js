@@ -175,6 +175,7 @@ export default {
 				chat.lastTimeTip = msgInfo.sendTime;
 			}
 			// 根据id顺序插入，防止消息乱序
+			console.log('chatStore');
 			let insertPos = chat.messages.length;
 			for (let idx in chat.messages) {
 				if (chat.messages[idx].id && msgInfo.id < chat.messages[idx].id) {
@@ -273,6 +274,7 @@ export default {
 				let key = "chats-" + userId;
 				let item = localStorage.getItem(key)
 				if (item) {
+					console.log("123");
 					let chatsData = JSON.parse(item);
 					context.commit("initChats", chatsData);
 				}

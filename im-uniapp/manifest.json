@@ -122,7 +122,8 @@
     "h5" : {
         "title" : "盒子IM",
         "router" : {
-            "base" : "/h5/"
+            "base" : "/h5/",
+            "mode" : "history"
         }
     }
 }
