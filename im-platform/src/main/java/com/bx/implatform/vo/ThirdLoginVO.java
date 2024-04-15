@@ -22,4 +22,7 @@ public class ThirdLoginVO {
 
     @ApiModelProperty(value = "用户名")
     private String userName;
+
+    @ApiModelProperty(value = "客服用户信息")
+    private UserVO kefuUserInfo;
 }

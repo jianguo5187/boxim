@@ -33,4 +33,9 @@ public class ThirdLoginDTO {
      * 个性签名
      */
     private String signature;
+
+    /**
+     * 客服UserId
+     */
+    private Long kefuUserId;
 }

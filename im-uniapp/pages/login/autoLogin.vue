@@ -15,6 +15,7 @@
 					userName: null,
 					nickName: null,
 					signature: null,
+					kefuUserId: null,
 				},
 				rules: {
 				}
@@ -27,10 +28,11 @@
 			console.log('获取的参数',this.info);
 			setTimeout(() => {
 				// 获取URL中的查询字符串部分
-				this.loginForm.thirdUserId = this.info.userId
-				this.loginForm.userName = this.info.userName
-				this.loginForm.nickName = this.info.nickName
-				this.loginForm.signature = this.info.signature
+				this.loginForm.thirdUserId = typeof this.info.userId == 'undefined'?'':this.info.userId
+				this.loginForm.userName = typeof this.info.userName == 'undefined'?'':this.info.userName
+				this.loginForm.nickName = typeof this.info.nickName == 'undefined'?'':this.info.nickName
+				this.loginForm.signature = typeof this.info.signature == 'undefined'?'':this.info.signature
+				this.loginForm.kefuUserId = typeof this.info.kefuUserId == 'undefined'?'':this.info.kefuUserId
 				this.$http({
 					url: '/thirdLogin',
 					data: this.loginForm,
@@ -42,12 +44,24 @@
 					uni.setStorageSync("loginInfo", data);
 					// 调用App.vue的初始化方法
 					getApp().init()
-					// 跳转到聊天页面   
-					uni.switchTab({
-						url: "/pages/chat/chat"
+					// 跳转到聊天页面
+					
+					let chat = {
+						type: 'PRIVATE',
+						targetId: data.kefuUserInfo.id,
+						showName: data.kefuUserInfo.nickName,
+						headImage: data.kefuUserInfo.headImage,
+					};
+					this.$store.commit("openChat", chat);
+					uni.navigateTo({
+						url:"/pages/chat/chat-box?chatIdx=0"
 					})
+					
+					// uni.switchTab({
+					// 	url: "/pages/chat/chat"
+					// })
 				})
-			}, 0)
+			}, 500)
 		}
 	}
 </script>

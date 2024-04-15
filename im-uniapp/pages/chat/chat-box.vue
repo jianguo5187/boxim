@@ -3,7 +3,7 @@
 		<view class="header">
 			<uni-icons class="btn-side left" type="back" size="30" @click="onNavBack()"></uni-icons>
 			<text class="title">{{title}}</text>
-			<uni-icons class="btn-side right" type="more-filled" size="30" @click="onShowMore()"></uni-icons>
+			<!-- <uni-icons class="btn-side right" type="more-filled" size="30" @click="onShowMore()"></uni-icons> -->
 		</view>
 		<view class="chat-msg" @click="switchChatTabBox('none',true)">
 			<scroll-view class="scroll-box" scroll-y="true" @scrolltoupper="onScrollToTop"
@@ -669,6 +669,9 @@
 			}
 			// 复位回执消息
 			this.isReceipt = false;
+			var a =  document.getElementsByClassName('uni-page-head-hd')[0]
+			a.style.display = 'none'
+
 		},
 		onShow() {
 			// 页面滚到底部
@@ -713,6 +716,9 @@
 				&.right {
 					right: 30rpx;
 				}
+			}
+			.uniui-back{
+				display: none;
 			}
 		}
 

@@ -260,20 +260,25 @@
 		},
 		onLaunch(e) {
 			if (e.query.terminal == 1) {
+				if (uni.getStorageSync("loginInfo")) {
+					uni.removeStorageSync("loginInfo")
+				}
+				// store.commit("setAutoLoginInfo", encodeURIComponent(JSON.stringify(e.query));
 				uni.navigateTo({
 					url: "/pages/login/autoLogin?item="+ encodeURIComponent(JSON.stringify(e.query))
 				})
 				return
-			}
-			// 登录状态校验
-			if (uni.getStorageSync("loginInfo")) {
-				// 初始化
-				this.init()
-			} else {
-				// 跳转到登录页
-				uni.navigateTo({
-					url: "/pages/login/login"
-				})
+			}else{
+				// 登录状态校验
+				if (uni.getStorageSync("loginInfo")) {
+					// 初始化
+					this.init()
+				} else {
+					// 跳转到登录页
+					uni.navigateTo({
+						url: "/pages/login/login"
+					})
+				}
 			}
 
 		}

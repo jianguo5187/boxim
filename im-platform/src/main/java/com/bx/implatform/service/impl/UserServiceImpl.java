@@ -119,6 +119,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         vo.setRefreshToken(refreshToken);
         vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
         vo.setUserName(user.getUserName());
+
+
+        User kefuUser = this.getById(dto.getKefuUserId());
+        if (null == kefuUser) {
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客服用户不存在");
+        }
+        UserVO kefuVo = BeanUtils.copyProperties(kefuUser, UserVO.class);
+        vo.setKefuUserInfo(kefuVo);
+
         return vo;
     }
 
