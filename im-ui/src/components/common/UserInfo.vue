@@ -10,18 +10,30 @@
 					<el-descriptions :column="1" :title="user.userName" class="user-info-items">
 						<el-descriptions-item label="昵称">{{ user.nickName }}
 						</el-descriptions-item>
-						<el-descriptions-item label="签名">{{ user.signature }}
+
+						<el-descriptions-item label="备注">{{ friendRemarkName }}
 						</el-descriptions-item>
 					</el-descriptions>
 				</div>
-
 			</div>
 			<el-divider content-position="center"></el-divider>
 			<div class="user-btn-group">
-				<el-button v-show="isFriend" type="primary" @click="onSendMessage()">发消息</el-button>
-				<el-button v-show="!isFriend" type="primary" @click="onAddFriend()">加为好友</el-button>
+				<el-button v-show="isFriend" type="primary" @click="openUpdateRemarkName()">修改备注</el-button>
+<!--				<el-button v-show="!isFriend" type="primary" @click="onAddFriend()">加为好友</el-button>-->
 			</div>
 		</div>
+
+    <el-dialog title="修改备注" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item prop="remarkName" label="备注">
+          <el-input v-model="form.remarkName" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="updateRemarkName">确认修改</el-button>
+        <el-button @click="cancel">关闭</el-button>
+      </div>
+    </el-dialog>
 	</div>
 </template>
 
@@ -35,7 +47,13 @@
 		},
 		data() {
 			return {
-
+        friendRemarkName:null,
+        // 是否显示弹出层
+        open: false,
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {},
 			}
 		},
 		props: {
@@ -47,20 +65,58 @@
 			}
 		},
 		methods: {
-			onSendMessage() {
-				let user = this.user;
-				let chat = {
-					type: 'PRIVATE',
-					targetId: user.id,
-					showName: user.nickName,
-					headImage: user.headImage,
-				};
-				this.$store.commit("openChat", chat);
-				this.$store.commit("activeChat", 0);
-				if (this.$route.path != "/home/chat") {
-					this.$router.push("/home/chat");
-				}
-				this.$emit("close");
+      // 表单重置
+      reset() {
+        this.form = {
+          remarkName: null,
+          friendId: null,
+        };
+      },
+      updateRemarkName() {
+        this.$http({
+          url: "/friend/updateRemark",
+          method: "put",
+          data: this.form
+        }).then((data) => {
+          this.friendRemarkName = this.form.remarkName;
+          var nickName = "";
+          let friends = this.$store.state.friendStore.friends;
+          for(var i=0;i<friends.length;i++){
+            var objFriend = friends[i];
+            if(objFriend.id ==this.user.id){
+              nickName = objFriend.nickName;
+              this.$store.commit("activeFriend", i);
+              this.$store.commit("updateFriendRemark", this.form.remarkName);
+              break;
+            }
+          }
+
+          let chats = this.$store.state.chatStore.chats;
+          for(var j=0;j<chats.length;j++){
+            var objChat = chats[j];
+            if(objChat.targetId ==this.user.id){
+              this.$store.commit("activeChatIndex", j);
+              if(this.form.remarkName == undefined || this.form.remarkName == ''){
+                this.$store.commit("updateChatRemark", nickName);
+              }else{
+                this.$store.commit("updateChatRemark", this.form.remarkName);
+              }
+              break;
+            }
+          }
+          this.cancel();
+        })
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+			openUpdateRemarkName() {
+        this.open = true;
+        this.reset();
+        this.form.remarkName = this.friendRemarkName;
+        this.form.friendId = this.user.id;
 			},
 			onAddFriend() {
 				this.$http({
@@ -84,12 +140,20 @@
 				if (this.user.headImage) {
 					this.$store.commit("showFullImageBox", this.user.headImage);
 				}
-			}
+			},
+      setFriendRemark(friend){
+        if(friend != undefined){
+          this.friendRemarkName = friend.remarkName;
+        }else{
+          this.friendRemarkName = null;
+        }
+      }
 		},
 		computed: {
 			isFriend() {
 				let friends = this.$store.state.friendStore.friends;
 				let friend = friends.find((f) => f.id == this.user.id);
+        this.setFriendRemark(friend);
 				return friend != undefined;
 			}
 		}

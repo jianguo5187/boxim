@@ -3,6 +3,7 @@ package com.bx.implatform.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.vo.FriendVO;
+import com.bx.implatform.vo.UpdateFriendRemarkVO;
 
 import java.util.List;
 
@@ -64,4 +65,5 @@ public interface IFriendService extends IService<Friend> {
      */
     void addKefuFriend(Long kefuUserId, Long friendId);
 
+    void modifyFriendRemark(UpdateFriendRemarkVO vo);
 }

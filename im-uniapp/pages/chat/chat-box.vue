@@ -651,10 +651,12 @@
 			}
 		},
 		onLoad(options) {
-			// 聊天数据
+			console.log('onload');
 			this.chat = this.$store.state.chatStore.chats[options.chatIdx];
 			// 初始状态只显示30条消息
 			let size = this.chat.messages.length;
+			
+				console.log('size：' + size);
 			this.showMinIdx = size > 30 ? size - 30 : 0;
 			// 激活当前会话
 			this.$store.commit("activeChat", options.chatIdx);
@@ -671,14 +673,23 @@
 			this.isReceipt = false;
 			var a =  document.getElementsByClassName('uni-page-head-hd')[0]
 			a.style.display = 'none'
+			// this.$nextTick(() => {
+			// })
+			// // 聊天数据
+			// setTimeout(() => {
+				
+			// },100);
 
+			console.log('onload2');
 		},
 		onShow() {
 			// 页面滚到底部
 			this.scrollToBottom();
+			console.log('onShow');
 		},
 		onUnload() {
 			this.$store.commit("activeChat", -1);
+			console.log('onUnload');
 		}
 	}
 </script>

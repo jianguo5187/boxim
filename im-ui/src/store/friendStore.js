@@ -22,6 +22,10 @@ export default {
 				}
 			})
 		},
+		updateFriendRemark(state, remarkName) {
+			state.activeFriend.remarkName = remarkName;
+			this.commit("updateFriend",state.activeFriend);
+		},
 		activeFriend(state, idx) {
 			state.activeFriend = state.friends[idx];
 		},
@@ -94,6 +98,7 @@ export default {
 					url: '/friend/list',
 					method: 'GET'
 				}).then((friends) => {
+					console.log("loadFriend");
 					context.commit("setFriends", friends);
 					context.commit("refreshOnlineStatus");
 					resolve()

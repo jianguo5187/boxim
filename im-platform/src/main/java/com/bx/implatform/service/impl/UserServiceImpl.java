@@ -119,6 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         vo.setRefreshToken(refreshToken);
         vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
         vo.setUserName(user.getUserName());
+        vo.setUserId(user.getId());
 
 
         User kefuUser = this.getById(dto.getKefuUserId());

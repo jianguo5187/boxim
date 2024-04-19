@@ -11,11 +11,13 @@ export default {
 		groupMsgMaxId: 0,
 		loadingPrivateMsg: false,
 		loadingGroupMsg: false,
-		chats: []
+		chats: [],
+		activeChatIndex: null
 	},
 
 	mutations: {
 		initChats(state, chatsData) {
+			console.log('initChats');
 			state.chats = chatsData.chats || [];
 			state.privateMsgMaxId = chatsData.privateMsgMaxId || 0;
 			state.groupMsgMaxId = chatsData.groupMsgMaxId || 0;
@@ -58,6 +60,14 @@ export default {
 		},
 		activeChat(state, idx) {
 			state.activeChat = state.chats[idx];
+		},
+		activeChatIndex(state, idx) {
+			state.activeChatIndex = idx
+		},
+		updateChatRemark(state, remarkName) {
+			state.chats[state.activeChatIndex].showName = remarkName;
+			state.chats[state.activeChatIndex].remarkName = remarkName;
+			this.commit("saveToStorage");
 		},
 		resetUnreadCount(state, chatInfo) {
 			for (let idx in state.chats) {
@@ -219,7 +229,9 @@ export default {
 				let chat = state.chats[i];
 				if (chat.type == 'PRIVATE' && chat.targetId == friend.id) {
 					chat.headImage = friend.headImageThumb;
-					chat.showName = friend.nickName;
+					if(chat.showName == undefined || chat.showName == ''){
+						chat.showName = friend.nickName;
+					}
 					break;
 				}
 			}
@@ -273,8 +285,8 @@ export default {
 				let userId = userStore.state.userInfo.id;
 				let key = "chats-" + userId;
 				let item = localStorage.getItem(key)
+				console.log('loadChat');
 				if (item) {
-					console.log("123");
 					let chatsData = JSON.parse(item);
 					context.commit("initChats", chatsData);
 				}

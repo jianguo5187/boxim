@@ -20,6 +20,9 @@ public class ThirdLoginVO {
     @ApiModelProperty(value = "refreshToken过期时间(秒)")
     private Integer refreshTokenExpiresIn;
 
+    @ApiModelProperty(value = "用户ID")
+    private Long userId;
+
     @ApiModelProperty(value = "用户名")
     private String userName;
 

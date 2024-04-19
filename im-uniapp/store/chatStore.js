@@ -299,6 +299,7 @@ export default {
 		loadChat(context) {
 			return new Promise((resolve, reject) => {
 				let userId = userStore.state.userInfo.id;
+				console.log("loadChat_userId:" + userId);
 				uni.getStorage({
 					key: "chats-" + userId,
 					success(res) {

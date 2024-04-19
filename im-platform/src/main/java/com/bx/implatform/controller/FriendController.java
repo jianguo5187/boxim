@@ -6,6 +6,7 @@ import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.vo.FriendVO;
+import com.bx.implatform.vo.UpdateFriendRemarkVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class FriendController {
             vo.setId(f.getFriendId());
             vo.setHeadImage(f.getFriendHeadImage());
             vo.setNickName(f.getFriendNickName());
+            vo.setRemarkName(f.getRemarkName());
             return vo;
         }).collect(Collectors.toList());
         return ResultUtils.success(vos);
@@ -64,6 +66,13 @@ public class FriendController {
     @ApiOperation(value = "更新好友信息", notes = "更新好友头像或昵称")
     public Result modifyFriend(@Valid @RequestBody FriendVO vo) {
         friendService.update(vo);
+        return ResultUtils.success();
+    }
+
+    @PutMapping("/updateRemark")
+    @ApiOperation(value = "更新好友备注", notes = "更新好友备注")
+    public Result modifyFriendRemark(@Valid @RequestBody UpdateFriendRemarkVO vo) {
+        friendService.modifyFriendRemark(vo);
         return ResultUtils.success();
     }
 

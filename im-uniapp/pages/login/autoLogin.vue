@@ -42,6 +42,8 @@
 					uni.setStorageSync("userName", data.userName);
 					// uni.setStorageSync("password", this.loginForm.password);
 					uni.setStorageSync("loginInfo", data);
+					uni.removeStorageSync("chats-" + data.userId);
+					uni.removeStorageSync("chats-undefined");
 					// 调用App.vue的初始化方法
 					getApp().init()
 					// 跳转到聊天页面

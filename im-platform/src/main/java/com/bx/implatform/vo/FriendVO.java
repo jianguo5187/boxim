@@ -21,4 +21,7 @@ public class FriendVO {
 
     @ApiModelProperty(value = "好友头像")
     private String headImage;
+
+    @ApiModelProperty(value = "备注")
+    private String remarkName;
 }

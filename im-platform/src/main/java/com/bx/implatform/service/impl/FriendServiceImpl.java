@@ -15,6 +15,7 @@ import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.vo.FriendVO;
+import com.bx.implatform.vo.UpdateFriendRemarkVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -164,5 +165,20 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
         FriendServiceImpl proxy = (FriendServiceImpl) AopContext.currentProxy();
         proxy.bindFriend(kefuUserId, friendId);
         proxy.bindFriend(friendId, kefuUserId);
+    }
+
+    @Override
+    public void modifyFriendRemark(UpdateFriendRemarkVO vo) {
+        UserSession session = SessionContext.getSession();
+        QueryWrapper<Friend> wrapper = new QueryWrapper<>();
+        wrapper.lambda()
+                .eq(Friend::getUserId, session.getUserId())
+                .eq(Friend::getFriendId, vo.getFriendId());
+        Friend friend = this.getOne(wrapper);
+        if (friend == null) {
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "对方不是您的好友");
+        }
+        friend.setRemarkName(vo.getRemarkName());
+        this.updateById(friend);
     }
 }

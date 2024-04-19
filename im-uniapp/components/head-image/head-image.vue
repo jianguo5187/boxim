@@ -42,11 +42,11 @@
 		},
 		methods: {
 			showUserInfo(e) {
-				if (this.id && this.id > 0) {
-					uni.navigateTo({
-						url: "/pages/common/user-info?id="+this.id
-					})
-				}
+				// if (this.id && this.id > 0) {
+				// 	uni.navigateTo({
+				// 		url: "/pages/common/user-info?id="+this.id
+				// 	})
+				// }
 			}
 		},
 		computed: {

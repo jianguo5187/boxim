@@ -62,6 +62,12 @@ public class Friend extends Model<Friend> {
     @TableField("created_time")
     private Date createdTime;
 
+    /**
+     * 备注
+     */
+    @TableField("remark_name")
+    private String remarkName;
+
 
     @Override
     protected Serializable pkVal() {

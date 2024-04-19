@@ -260,9 +260,8 @@
 		},
 		onLaunch(e) {
 			if (e.query.terminal == 1) {
-				if (uni.getStorageSync("loginInfo")) {
-					uni.removeStorageSync("loginInfo")
-				}
+				console.log('terminal');
+				uni.removeStorageSync("loginInfo")
 				// store.commit("setAutoLoginInfo", encodeURIComponent(JSON.stringify(e.query));
 				uni.navigateTo({
 					url: "/pages/login/autoLogin?item="+ encodeURIComponent(JSON.stringify(e.query))

@@ -51,7 +51,7 @@
 			},
 			onTop(chatIdx) {
 				this.$store.commit("moveTop", chatIdx);
-			},
+			}
 		},
     mounted() {
       setTimeout(() => {
