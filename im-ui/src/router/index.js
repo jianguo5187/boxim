@@ -9,7 +9,7 @@ Vue.use(VueRouter);
 
 // 配置导出路由
 export default new VueRouter({
-  mode:'history',
+  // mode:'history',
   routes: [{
       path: "/", 
       redirect: "/login" 
