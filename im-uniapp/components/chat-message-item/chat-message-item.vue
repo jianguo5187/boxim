@@ -162,7 +162,13 @@
 				}
 			},
 			onSelectMenu(item) {
-				this.$emit(item.key.toLowerCase(), this.msgInfo);
+				if(item.key == "COPY"){
+					uni.setClipboardData({
+						data: this.msgInfo.content
+					});
+				}else{
+					this.$emit(item.key.toLowerCase(), this.msgInfo);
+				}
 				this.menu.show = false;
 			},
 			onShowFullImage() {
@@ -198,24 +204,28 @@
 			menuItems() {
 				let items = [];
 				items.push({
-					key: 'DELETE',
-					name: '删除',
-					icon: 'trash'
-				});
-				if (this.msgInfo.selfSend && this.msgInfo.id > 0) {
-					items.push({
-						key: 'RECALL',
-						name: '撤回',
-						icon: 'refreshempty'
-					});
-				}
-				if (this.msgInfo.type == this.$enums.MESSAGE_TYPE.FILE) {
-					items.push({
-						key: 'DOWNLOAD',
-						name: '下载并打开',
-						icon: 'download'
-					});
-				}
+					key: 'COPY',
+					name: '复制'
+				})
+				// items.push({
+				// 	key: 'DELETE',
+				// 	name: '删除',
+				// 	icon: 'trash'
+				// });
+				// if (this.msgInfo.selfSend && this.msgInfo.id > 0) {
+				// 	items.push({
+				// 		key: 'RECALL',
+				// 		name: '撤回',
+				// 		icon: 'refreshempty'
+				// 	});
+				// }
+				// if (this.msgInfo.type == this.$enums.MESSAGE_TYPE.FILE) {
+				// 	items.push({
+				// 		key: 'DOWNLOAD',
+				// 		name: '下载并打开',
+				// 		icon: 'download'
+				// 	});
+				// }
 				return items;
 			},
 			isRTMessage() {

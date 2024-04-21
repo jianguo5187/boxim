@@ -39,7 +39,8 @@
 				searchText: "",
 				messageContent: "",
 				group: {},
-				groupMembers: []
+				groupMembers: [],
+        loginUserId:this.$store.state.userStore.userInfo.id
 			}
 		},
 		methods: {
@@ -51,10 +52,33 @@
 			},
 			onTop(chatIdx) {
 				this.$store.commit("moveTop", chatIdx);
-			}
-		},
+			},
+      setFriendRemark() {
+        let friends = this.$store.state.friendStore.friends;
+        for(var i=0;i<friends.length;i++){
+          var objFriend = friends[i];
+          if(objFriend.remarkName != undefined && objFriend.remarkName != ""){
+            this.setChatShowName(objFriend.id,objFriend.remarkName);
+          }else {
+            this.setChatShowName(objFriend.id,objFriend.nickName);
+          }
+        }
+      },
+      setChatShowName(friednId,nickName){
+        let chats = this.$store.state.chatStore.chats;
+        for(var j=0;j<chats.length;j++){
+          var objChat = chats[j];
+          if(objChat.targetId == friednId){
+            this.$store.commit("activeChatIndex", j);
+            this.$store.commit("updateChatRemark", nickName);
+            break;
+          }
+        }
+      }
+    },
     mounted() {
       setTimeout(() => {
+        this.setFriendRemark();
         if(this.chatStore.chats.length == 0){
           this.$router.push("/home/friend");
         }

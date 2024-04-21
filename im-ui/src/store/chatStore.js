@@ -227,6 +227,7 @@ export default {
 		updateChatFromFriend(state, friend) {
 			for (let i in state.chats) {
 				let chat = state.chats[i];
+				console.log("updateChatFromFriend");
 				if (chat.type == 'PRIVATE' && chat.targetId == friend.id) {
 					chat.headImage = friend.headImageThumb;
 					if(chat.showName == undefined || chat.showName == ''){
