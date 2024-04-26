@@ -103,14 +103,20 @@
 			}
 		},
 		mounted() {
-		  setTimeout(() => {
-			if(this.chatStore.chats.length == 0){
-				// 跳转到好友页面   
-				uni.switchTab({
-					url: "/pages/friend/friend"
-				})
-			}
-		  }, 500);
+		 //  setTimeout(() => {
+			// if(this.chatStore.chats.length == 0){
+			// 	// 跳转到好友页面   
+			// 	uni.switchTab({
+			// 		url: "/pages/friend/friend"
+			// 	})
+			// }
+		 //  }, 500);
+		 console.log('chat.vue');
+		  if(uni.getStorageSync("autoOpenChat") && uni.getStorageSync("autoOpenChat") == "1"){
+			  	uni.navigateTo({
+			  		url: "/pages/chat/chat-box?chatIdx=0"
+			  	})
+		  }
 		},
 		computed: {
 			chatStore() {

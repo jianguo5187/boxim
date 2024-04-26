@@ -259,12 +259,17 @@
 			}
 		},
 		onLaunch(e) {
-			if (e.query.terminal == 1) {
+			if (window.location.href.includes('?') && window.location.href.includes('terminal=1')) {
 				console.log('terminal');
 				uni.removeStorageSync("loginInfo")
-				// store.commit("setAutoLoginInfo", encodeURIComponent(JSON.stringify(e.query));
+				const params = new URLSearchParams(window.location.search);
+				var paramStr = '{';
+				for (const [key, value] of params) {
+					paramStr += '"' + key + '":"' + value + '",';
+				}
+				paramStr = paramStr.substr(0,paramStr.length-1) + '}';
 				uni.navigateTo({
-					url: "/pages/login/autoLogin?item="+ encodeURIComponent(JSON.stringify(e.query))
+					url: "/pages/login/login?item="+ encodeURIComponent(paramStr)
 				})
 				return
 			}else{
