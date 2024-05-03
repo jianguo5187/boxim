@@ -1,5 +1,6 @@
 package com.bx.implatform.controller;
 
+import com.bx.implatform.dto.NoAuthNoReadCntDto;
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
@@ -70,6 +71,5 @@ public class PrivateMessageController {
                                                         @NotNull(message = "size不能为空") @RequestParam Long size) {
         return ResultUtils.success(privateMessageService.findHistoryMessage(friendId, page, size));
     }
-
 }
 

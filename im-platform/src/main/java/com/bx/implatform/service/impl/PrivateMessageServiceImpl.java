@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bx.imclient.IMClient;
@@ -12,9 +13,11 @@ import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.model.IMGroupMessage;
 import com.bx.imcommon.model.IMPrivateMessage;
 import com.bx.imcommon.model.IMUserInfo;
+import com.bx.implatform.dto.NoAuthNoReadCntDto;
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.entity.PrivateMessage;
+import com.bx.implatform.entity.User;
 import com.bx.implatform.enums.MessageStatus;
 import com.bx.implatform.enums.MessageType;
 import com.bx.implatform.enums.ResultCode;
@@ -22,6 +25,7 @@ import com.bx.implatform.exception.GlobalException;
 import com.bx.implatform.mapper.PrivateMessageMapper;
 import com.bx.implatform.service.IFriendService;
 import com.bx.implatform.service.IPrivateMessageService;
+import com.bx.implatform.service.IUserService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
@@ -45,6 +49,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
     private final IFriendService friendService;
     private final IMClient imClient;
     private final SensitiveFilterUtil sensitiveFilterUtil;
+    private final IUserService userService;
 
     @Override
     public Long sendMessage(PrivateMessageDTO dto) {
@@ -281,7 +286,6 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         return message.getId();
     }
 
-
     private void sendLoadingMessage(Boolean isLoadding){
         UserSession session = SessionContext.getSession();
         PrivateMessageVO msgInfo = new PrivateMessageVO();
@@ -295,5 +299,29 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         sendMessage.setSendToSelf(false);
         sendMessage.setSendResult(false);
         imClient.sendPrivateMessage(sendMessage);
+    }
+
+    @Override
+    public Integer noAuthNoReadCnt(NoAuthNoReadCntDto vo) {
+        if(StringUtils.isEmpty(vo.getSendUserName()) || StringUtils.isEmpty(vo.getSendUserName())){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "发送者用户名和接收者用户名不能为空");
+        }
+        User sendUser = userService.findUserByUserName(vo.getSendUserName());
+        if(sendUser == null){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "发送者用户名不存在，请联系管理员。");
+        }
+        User recvUser = userService.findUserByUserName(vo.getRecvUserName());
+        if(recvUser == null){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "接收者用户名不存在，请联系管理员。");
+        }
+
+        // 获取当前用户的消息
+        LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
+        // 只能拉取最近1个月的
+        queryWrapper.eq(PrivateMessage::getSendId, sendUser.getId())
+                .eq(PrivateMessage::getRecvId, recvUser.getId())
+                .eq(PrivateMessage::getStatus,0);
+        List<PrivateMessage> messages = this.list(queryWrapper);
+        return messages.size();
     }
 }

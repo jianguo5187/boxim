@@ -34,8 +34,10 @@ mybatis-plus:
   mapper-locations:
     - classpath*:mapper/*.xml
 minio:
-  endpoint: http://127.0.0.1:9000 #内网地址
-  public: http://127.0.0.1:9000  #外网访问地址
+#  endpoint: http://127.0.0.1:9000 #内网地址
+#  public: http://127.0.0.1:9000  #外网访问地址
+  endpoint: http://127.0.0.1:9090
+  public: http://43.129.193.243:9090
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: box-im

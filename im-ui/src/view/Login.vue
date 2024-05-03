@@ -65,9 +65,9 @@
 					<el-button type="primary" @click="submitForm('loginForm')">登陆</el-button>
 					<el-button @click="resetForm('loginForm')">清空</el-button>
 				</el-form-item>
-				<div class="register">
-					<router-link to="/register">没有账号,前往注册</router-link>
-				</div>
+<!--				<div class="register">-->
+<!--					<router-link to="/register">没有账号,前往注册</router-link>-->
+<!--				</div>-->
 			</el-form>
 		</div>
 <!--		<icp></icp>-->

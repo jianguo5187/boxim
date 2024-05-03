@@ -1,11 +1,9 @@
 package com.bx.implatform.controller;
 
-import com.bx.implatform.dto.LoginDTO;
-import com.bx.implatform.dto.ModifyPwdDTO;
-import com.bx.implatform.dto.RegisterDTO;
-import com.bx.implatform.dto.ThirdLoginDTO;
+import com.bx.implatform.dto.*;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
+import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.service.IUserService;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.ThirdLoginVO;
@@ -22,6 +20,8 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final IUserService userService;
+
+    private final IPrivateMessageService privateMessageService;
 
     @PostMapping("/login")
     @ApiOperation(value = "用户注册", notes = "用户注册")
@@ -60,4 +60,9 @@ public class LoginController {
         return ResultUtils.success();
     }
 
+    @PostMapping("/noAuthNoReadCnt")
+    @ApiOperation(value = "未读消息件数", notes = "未读消息件数")
+    public Result<Integer> noAuthNoReadCnt(@Valid @RequestBody NoAuthNoReadCntDto vo) {
+        return ResultUtils.success(privateMessageService.noAuthNoReadCnt(vo));
+    }
 }

@@ -1,6 +1,7 @@
 package com.bx.implatform.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bx.implatform.dto.NoAuthNoReadCntDto;
 import com.bx.implatform.dto.PrivateMessageDTO;
 import com.bx.implatform.entity.PrivateMessage;
 import com.bx.implatform.vo.PrivateMessageVO;
@@ -64,4 +65,6 @@ public interface IPrivateMessageService extends IService<PrivateMessage> {
      * @param friendId 好友id
      */
     Long getMaxReadedId(Long friendId);
+
+    Integer noAuthNoReadCnt(NoAuthNoReadCntDto vo);
 }

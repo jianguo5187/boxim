@@ -24,6 +24,9 @@
 <!--						<span class="icon iconfont icon-group_fill"></span>-->
 <!--					</router-link>-->
 <!--				</el-menu-item>-->
+        <el-menu-item title="修改密码" @click="showChangePassword()">
+          <span class="el-icon-edit"></span>
+        </el-menu-item>
 				<el-menu-item title="设置" @click="showSetting()">
 					<span class="el-icon-setting"></span>
 				</el-menu-item>
@@ -36,6 +39,7 @@
 			<router-view></router-view>
 		</el-main>
 		<setting :visible="showSettingDialog" @close="closeSetting()"></setting>
+    <change-password :visible="showChangePasswordDialog" @close="closeChangePassword()"></change-password>
 		<user-info v-show="uiStore.userInfo.show" :pos="uiStore.userInfo.pos" :user="uiStore.userInfo.user"
 			@close="$store.commit('closeUserInfoBox')"></user-info>
 		<full-image :visible="uiStore.fullImage.show" :url="uiStore.fullImage.url"
@@ -47,7 +51,8 @@
 
 <script>
 	import HeadImage from '../components/common/HeadImage.vue';
-	import Setting from '../components/setting/Setting.vue';
+  import Setting from '../components/setting/Setting.vue';
+  import ChangePassword from '../components/setting/ChangePassword.vue';
 	import UserInfo from '../components/common/UserInfo.vue';
 	import FullImage from '../components/common/FullImage.vue';
 	import ChatPrivateVideo from '../components/chat/ChatPrivateVideo.vue';
@@ -56,7 +61,8 @@
 	export default {
 		components: {
 			HeadImage,
-			Setting,
+      Setting,
+      ChangePassword,
 			UserInfo,
 			FullImage,
 			ChatPrivateVideo,
@@ -65,6 +71,7 @@
 		data() {
 			return {
 				showSettingDialog: false,
+        showChangePasswordDialog: false,
 				lastPlayAudioTime: new Date().getTime() - 1000,
 			}
 		},
@@ -269,6 +276,12 @@
 			closeSetting() {
 				this.showSettingDialog = false;
 			},
+      showChangePassword() {
+        this.showChangePasswordDialog = true;
+      },
+      closeChangePassword() {
+        this.showChangePasswordDialog = false;
+      },
 			loadFriendInfo(id) {
 				return new Promise((resolve, reject) => {
 					let friend = this.$store.state.friendStore.friends.find((f) => f.id == id);
