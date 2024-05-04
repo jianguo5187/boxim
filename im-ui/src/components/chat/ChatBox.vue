@@ -3,6 +3,7 @@
 		<el-container>
 			<el-header height="60px">
 				<span>{{ title }}</span>
+        <span>{{ ipAddress }}</span>
 				<span title="群聊信息" v-show="this.chat.type == 'GROUP'" class="btn-side el-icon-more"
 					@click="showSide = !showSide"></span>
 			</el-header>
@@ -711,6 +712,14 @@ export default {
 			}
 			return title;
 		},
+    ipAddress() {
+      console.log("userIpAddress");
+      let userIpAddress = this.chat.userIpAddress;
+      if (userIpAddress != null) {
+        userIpAddress = "(" + userIpAddress + ")";
+      }
+      return userIpAddress;
+    },
 		messageAction() {
 			return `/message/${this.chat.type.toLowerCase()}/send`;
 		},
@@ -866,7 +875,7 @@ export default {
 				outline-color: rgba(83, 160, 231, 0.61);
 
 				text-align: left;
-				line-height: 30 px;
+				line-height: 30px;
 
 				&:before {
 					content: attr(placeholder);

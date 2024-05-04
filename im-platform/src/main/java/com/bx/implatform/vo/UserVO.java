@@ -45,4 +45,10 @@ public class UserVO {
     @ApiModelProperty(value = "是否在线")
     private Boolean online;
 
+    @ApiModelProperty(value = "用户注册IP")
+    private String userIp;
+
+    @ApiModelProperty(value = "用户注册IP")
+    private String userIpAddress;
+
 }

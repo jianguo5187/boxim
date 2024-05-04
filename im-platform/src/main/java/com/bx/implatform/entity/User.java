@@ -97,6 +97,18 @@ public class User extends Model<User> {
     @TableField("third_user_id")
     private String thirdUserId;
 
+    /**
+     * 用户注册IP
+     */
+    @TableField("user_ip")
+    private String userIp;
+
+    /**
+     * 用户注册IP归属地
+     */
+    @TableField("user_ip_address")
+    private String userIpAddress;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

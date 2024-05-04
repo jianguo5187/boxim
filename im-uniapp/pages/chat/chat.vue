@@ -113,8 +113,24 @@
 		 //  }, 500);
 		 console.log('chat.vue');
 		  if(uni.getStorageSync("autoOpenChat") && uni.getStorageSync("autoOpenChat") == "1"){
+			  var index = 0;
+			  var chatIndex = 0;
+			  var autoOpenChatUserId = uni.getStorageSync("autoOpenChatUserId");
+			  var chats = this.chatStore.chats;
+			  for(var i=0;i<chats.length;i++){
+				  var chatObj = chats[i];
+				  if(chats[i].targetId == autoOpenChatUserId){
+					  chatIndex = i;
+				  }
+			  }
+			 //  this.chatStore.chats.forEach(chat => {
+				//   index++;
+			 //  	if(chat.targetId == autoOpenChatUserId){
+				// 	chatIndex = index;
+				// }
+			 //  })
 			  	uni.navigateTo({
-			  		url: "/pages/chat/chat-box?chatIdx=0"
+			  		url: "/pages/chat/chat-box?chatIdx=" + chatIndex
 			  	})
 		  }
 		},

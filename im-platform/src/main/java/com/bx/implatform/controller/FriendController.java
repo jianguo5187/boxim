@@ -4,9 +4,11 @@ import com.bx.implatform.entity.Friend;
 import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IFriendService;
+import com.bx.implatform.service.IUserService;
 import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.vo.FriendVO;
 import com.bx.implatform.vo.UpdateFriendRemarkVO;
+import com.bx.implatform.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class FriendController {
 
     private final IFriendService friendService;
+    private final IUserService userService;
 
     @GetMapping("/list")
     @ApiOperation(value = "好友列表", notes = "获取好友列表")
@@ -35,6 +38,8 @@ public class FriendController {
             vo.setHeadImage(f.getFriendHeadImage());
             vo.setNickName(f.getFriendNickName());
             vo.setRemarkName(f.getRemarkName());
+            UserVO friendUser = userService.findUserById(f.getFriendId());
+            vo.setUserIpAddress(friendUser.getUserIpAddress());
             return vo;
         }).collect(Collectors.toList());
         return ResultUtils.success(vos);

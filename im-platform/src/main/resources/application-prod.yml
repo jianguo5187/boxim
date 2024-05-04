@@ -51,3 +51,5 @@ jwt:
     secret: g2VnugZYLw
 logging:
   config: classpath:logback-prod.xml
+ip:
+  url: http://ip-api.com/json/

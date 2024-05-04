@@ -32,6 +32,7 @@ import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.util.SensitiveFilterUtil;
 import com.bx.implatform.vo.GroupMessageVO;
 import com.bx.implatform.vo.PrivateMessageVO;
+import com.bx.implatform.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -303,16 +304,18 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
 
     @Override
     public Integer noAuthNoReadCnt(NoAuthNoReadCntDto vo) {
-        if(StringUtils.isEmpty(vo.getSendUserName()) || StringUtils.isEmpty(vo.getSendUserName())){
-            throw new GlobalException(ResultCode.PROGRAM_ERROR, "发送者用户名和接收者用户名不能为空");
+        if(vo.getKefuUserId() == null || StringUtils.isEmpty(vo.getRecvUserId())){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客服ID或客户ID不能为空");
         }
-        User sendUser = userService.findUserByUserName(vo.getSendUserName());
+
+        UserVO sendUser = userService.findUserById(vo.getKefuUserId());
         if(sendUser == null){
-            throw new GlobalException(ResultCode.PROGRAM_ERROR, "发送者用户名不存在，请联系管理员。");
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客服用户不存在，请联系管理员。");
         }
-        User recvUser = userService.findUserByUserName(vo.getRecvUserName());
+
+        User recvUser = userService.findUserByThirdUserId(vo.getRecvUserId());
         if(recvUser == null){
-            throw new GlobalException(ResultCode.PROGRAM_ERROR, "接收者用户名不存在，请联系管理员。");
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客户用户不存在，请联系管理员。");
         }
 
         // 获取当前用户的消息

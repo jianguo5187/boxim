@@ -34,6 +34,7 @@
 					nickName: null,
 					signature: null,
 					kefuUserId: null,
+					userIp: null,
 				},
 				rules: {
 					userName: {
@@ -91,11 +92,13 @@
 						// console.log('获取的参数',this.info);
 						setTimeout(() => {
 							// 获取URL中的查询字符串部分
-							this.autoLoginForm.thirdUserId = typeof this.info.userId == 'undefined'?'':this.info.userId
-							this.autoLoginForm.userName = typeof this.info.userName == 'undefined'?'':this.info.userName
-							this.autoLoginForm.nickName = typeof this.info.nickName == 'undefined'?'':this.info.nickName
-							this.autoLoginForm.signature = typeof this.info.signature == 'undefined'?'':this.info.signature
-							this.autoLoginForm.kefuUserId = typeof this.info.kefuUserId == 'undefined'?'':this.info.kefuUserId
+							this.autoLoginForm.thirdUserId = typeof this.info.userId == 'undefined'?'':this.info.userId;
+							this.autoLoginForm.userName = typeof this.info.userName == 'undefined'?'':this.info.userName;
+							this.autoLoginForm.nickName = typeof this.info.nickName == 'undefined'?'':this.info.nickName;
+							this.autoLoginForm.signature = typeof this.info.signature == 'undefined'?'':this.info.signature;
+							this.autoLoginForm.kefuUserId = typeof this.info.kefuUserId == 'undefined'?'':this.info.kefuUserId;
+							this.autoLoginForm.userIp = typeof this.info.userIp == 'undefined'?'':this.info.userIp;
+							
 							this.$http({
 								url: '/thirdLogin',
 								data: this.autoLoginForm,
@@ -118,6 +121,7 @@
 								};
 								this.$store.commit("openChat", chat);
 								uni.setStorageSync("autoOpenChat", "1");
+								uni.setStorageSync("autoOpenChatUserId", data.kefuUserInfo.id);
 								uni.switchTab({
 									// url:"/pages/chat/chat-box?chatIdx=0"
 					url: "/pages/chat/chat"

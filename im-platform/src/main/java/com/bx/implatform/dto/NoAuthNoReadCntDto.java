@@ -8,9 +8,9 @@ import lombok.Data;
 @ApiModel("未读消息件数DTO")
 public class NoAuthNoReadCntDto {
 
-    @ApiModelProperty(value = " 发送者用户名")
-    private String sendUserName;
+    @ApiModelProperty(value = " 客服用户ID")
+    private Long kefuUserId;
 
-    @ApiModelProperty(value = " 接收者用户名")
-    private String recvUserName;
+    @ApiModelProperty(value = "客户用户第三方ID")
+    private String recvUserId;
 }

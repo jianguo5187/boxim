@@ -1,6 +1,7 @@
 package com.bx.implatform.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +33,7 @@ import com.bx.implatform.vo.ThirdLoginVO;
 import com.bx.implatform.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @Slf4j
 @Service
@@ -51,6 +59,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final IFriendService friendService;
     private final JwtProperties jwtProperties;
     private final IMClient imClient;
+
+    // 获取官方开奖结果的URL
+    @Value("${ip.url}")
+    private String ipUrl;
 
     @Override
     public LoginVO login(LoginDTO dto) {
@@ -79,6 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public ThirdLoginVO thirdLogin(ThirdLoginDTO dto) {
         User user = this.findUserByThirdUserId(dto.getThirdUserId());
+        String ipAddress2= "";
         if (null == user) {
             // 创建一个新的用户
             user = new User();
@@ -98,6 +111,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 //昵称为空
                 user.setNickName("temp_"+formattedString);
             }
+            if(StringUtils.isNotEmpty(user.getUserIp())){
+                String ipAddress = getAddress(user.getUserIp());
+                user.setUserIpAddress(ipAddress);
+            }
             this.save(user);
 
             // 给客服账号自动添加好友
@@ -105,7 +122,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             for(User kefuUser: kefuUserList){
                 friendService.addKefuFriend(kefuUser.getId(),user.getId());
             }
+        }else{
+
+            if(StringUtils.isNotEmpty(dto.getUserIp()) && StringUtils.isEmpty(user.getUserIp())){
+                String ipAddress = getAddress(dto.getUserIp());
+                user.setUserIp(dto.getUserIp());
+                user.setUserIpAddress(ipAddress);
+                this.updateById(user);
+            }
         }
+
         // 生成token
         UserSession session = BeanUtils.copyProperties(user, UserSession.class);
         session.setUserId(user.getId());
@@ -130,6 +156,41 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         vo.setKefuUserInfo(kefuVo);
 
         return vo;
+    }
+
+    /**
+     * 通过调用接口根据ip获取归属地
+     */
+    public String getAddress(String ip) {
+        try {
+            URL realUrl = new URL(ipUrl + ip + "?lang=zh-CN");
+            HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setUseCaches(false);
+            conn.setReadTimeout(6000);
+            conn.setConnectTimeout(6000);
+            conn.setInstanceFollowRedirects(false);
+            int code = conn.getResponseCode();
+            StringBuilder sb = new StringBuilder();
+            String ipaddr = "";
+            if (code == 200) {
+                InputStream in = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                JSONObject resultJson = JSONObject.parseObject(sb.toString());
+                if(resultJson != null){
+                    ipaddr = resultJson.getString("regionName") + ":" + resultJson.getString("city");
+                }
+//                ipaddr = ip + "=" + sb.substring(sb.indexOf("addr") + 7, sb.indexOf("regionNames") - 3);
+            }
+            return ipaddr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -38,4 +38,9 @@ public class ThirdLoginDTO {
      * 客服UserId
      */
     private Long kefuUserId;
+
+    /**
+     * 用户IP
+     */
+    private String userIp;
 }

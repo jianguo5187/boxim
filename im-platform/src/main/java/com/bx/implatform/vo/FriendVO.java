@@ -24,4 +24,7 @@ public class FriendVO {
 
     @ApiModelProperty(value = "备注")
     private String remarkName;
+
+    @ApiModelProperty(value = "归属地")
+    private String userIpAddress;
 }

@@ -69,6 +69,10 @@ export default {
 			state.chats[state.activeChatIndex].remarkName = remarkName;
 			this.commit("saveToStorage");
 		},
+		updateChatIpAddress(state, userIpAddress) {
+			state.chats[state.activeChatIndex].userIpAddress = userIpAddress;
+			this.commit("saveToStorage");
+		},
 		resetUnreadCount(state, chatInfo) {
 			for (let idx in state.chats) {
 				if (state.chats[idx].type == chatInfo.type &&
