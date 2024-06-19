@@ -320,10 +320,28 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
 
         // 获取当前用户的消息
         LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
+        List<Integer> status = new ArrayList<>();
+        status.add(MessageStatus.SENDED.code());
+        status.add(MessageStatus.UNSEND.code());
         // 只能拉取最近1个月的
         queryWrapper.eq(PrivateMessage::getSendId, sendUser.getId())
                 .eq(PrivateMessage::getRecvId, recvUser.getId())
-                .eq(PrivateMessage::getStatus,0);
+                .in(PrivateMessage::getStatus,status);
+        List<PrivateMessage> messages = this.list(queryWrapper);
+        return messages.size();
+    }
+
+    @Override
+    public Integer getNoReadCnt() {
+        UserSession session = SessionContext.getSession();
+        // 获取当前用户的消息
+        LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
+        List<Integer> status = new ArrayList<>();
+        status.add(MessageStatus.SENDED.code());
+        status.add(MessageStatus.UNSEND.code());
+        // 只能拉取最近1个月的
+        queryWrapper.eq(PrivateMessage::getRecvId, session.getUserId())
+                .in(PrivateMessage::getStatus,status);
         List<PrivateMessage> messages = this.list(queryWrapper);
         return messages.size();
     }

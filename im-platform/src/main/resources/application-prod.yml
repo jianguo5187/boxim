@@ -27,7 +27,7 @@ mybatis-plus:
     - classpath*:mapper/*.xml
 minio:
   endpoint: http://127.0.0.1:9090
-  public: http://43.129.193.243:9090
+  public: http://43.132.168.72:9090
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: box-im
@@ -44,7 +44,7 @@ webrtc:
       credential: UrHHKNvE7nFvBTMV
 jwt:
   accessToken:
-    expireIn: 28800  #半个小时
+    expireIn: 86400  #1天
     secret: ztcv8qKGHV
   refreshToken:
     expireIn: 604800 #7天

@@ -67,4 +67,6 @@ public interface IPrivateMessageService extends IService<PrivateMessage> {
     Long getMaxReadedId(Long friendId);
 
     Integer noAuthNoReadCnt(NoAuthNoReadCntDto vo);
+
+    Integer getNoReadCnt();
 }

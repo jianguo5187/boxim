@@ -260,14 +260,34 @@
 				sessionStorage.removeItem("accessToken");
 				location.href = "/";
 			},
+      getNoReadCnt() {
+        this.$http({
+          url: `/message/private/noReadCnt`,
+          method: 'get'
+        }).then((noReadCnt) => {
+          if(noReadCnt > 0){
+            this.playAudioTip()
+          }
+        });
+      },
 			playAudioTip() {
-				if (new Date().getTime() - this.lastPlayAudioTime > 1000) {
+				// if (new Date().getTime() - this.lastPlayAudioTime > 1000) {
+          console.log("playAudioTip");
 					this.lastPlayAudioTime = new Date().getTime();
 					let audio = new Audio();
 					let url = require(`@/assets/audio/tip.wav`);
 					audio.src = url;
-					audio.play();
-				}
+					audio.play().then(() => {
+            // 播放成功
+            console.log('音频播放成功');
+          }).catch(error => {
+            // 播放失败，这里处理错误
+            console.error('音频播放失败:', error);
+            this.$router.push("/home/chat");
+            // 强制刷新页面
+            location.reload();
+          });
+				// }
 
 			},
 			showSetting() {
@@ -339,6 +359,7 @@
 		},
 		mounted() {
 			this.init();
+      setInterval(this.getNoReadCnt,15000);//每20s获取一次
 		},
 		unmounted() {
 			this.$wsApi.close();

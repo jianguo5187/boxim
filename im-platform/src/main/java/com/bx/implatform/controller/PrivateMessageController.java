@@ -71,5 +71,11 @@ public class PrivateMessageController {
                                                         @NotNull(message = "size不能为空") @RequestParam Long size) {
         return ResultUtils.success(privateMessageService.findHistoryMessage(friendId, page, size));
     }
+
+    @GetMapping("/noReadCnt")
+    @ApiOperation(value = "未读件数", notes = "拉取离线消息,消息将通过webscoket异步推送")
+    public Result noReadCnt() {
+        return ResultUtils.success(privateMessageService.getNoReadCnt());
+    }
 }
 

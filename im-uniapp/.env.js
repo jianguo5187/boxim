@@ -10,7 +10,7 @@ if(ENV=="DEV"){
 	// #endif
 }
 if(ENV=="PROD"){
-	UNI_APP.BASE_URL = "http://xjkf.504ds.cn:81/api";
-	UNI_APP.WS_URL = "ws://43.129.193.243:8878/im";
+	UNI_APP.BASE_URL = "http://43.132.168.72:82/api";
+	UNI_APP.WS_URL = "ws://43.132.168.72:8878/im";
 }
 export default UNI_APP
