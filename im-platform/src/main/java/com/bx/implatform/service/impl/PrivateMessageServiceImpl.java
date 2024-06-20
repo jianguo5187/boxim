@@ -164,7 +164,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                         .or(wp -> wp.eq(PrivateMessage::getRecvId, session.getUserId())
                                 .in(PrivateMessage::getSendId, friendIds)))
                 .orderByAsc(PrivateMessage::getId)
-                .last("limit 100");
+                .last("limit 10");
 
         List<PrivateMessage> messages = this.list(queryWrapper);
         // 更新发送状态
@@ -210,7 +210,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .or(wp -> wp.eq(PrivateMessage::getRecvId, session.getUserId())
                     .in(PrivateMessage::getSendId, friendIds)))
             .orderByDesc(PrivateMessage::getId)
-            .last("limit 1000");
+            .last("limit 10");
         List<PrivateMessage> messages = this.list(queryWrapper);
         // 消息顺序从小到大
         CollectionUtil.reverse(messages);
