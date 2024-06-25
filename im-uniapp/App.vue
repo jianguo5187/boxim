@@ -37,10 +37,16 @@
 					if (cmd == 2) {
 						// 异地登录，强制下线
 						uni.showModal({
-							content: '您已在其他地方登陆，将被强制下线',
+							content: '登陆超时，将被强制下线',
 							showCancel: false,
 						})
-						this.exit();
+						console.log("登陆超时，将被强制下线");
+						wsApi.close(1000);
+						uni.removeStorageSync("loginInfo");
+						uni.reLaunch({
+							url: "/pages/login/blank"
+						})
+						store.dispatch("unload");
 					} else if (cmd == 3) {
 						// 私聊消息
 						this.handlePrivateMessage(msgInfo);

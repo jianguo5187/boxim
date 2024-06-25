@@ -33,6 +33,9 @@ public class LoginProcessor extends AbstractMessageProcessor<IMLoginInfo> {
     @Value("${jwt.accessToken.secret}")
     private String accessTokenSecret;
 
+    @Value("${token.singleLogin}")
+    private Boolean singleLogin;
+
     @Override
     public synchronized void process(ChannelHandlerContext ctx, IMLoginInfo loginInfo) {
         if (!JwtUtil.checkSign(loginInfo.getAccessToken(), accessTokenSecret)) {
@@ -45,14 +48,14 @@ public class LoginProcessor extends AbstractMessageProcessor<IMLoginInfo> {
         Integer terminal = sessionInfo.getTerminal();
         log.info("用户登录，userId:{}", userId);
         ChannelHandlerContext context = UserChannelCtxMap.getChannelCtx(userId, terminal);
-//        if (context != null && !ctx.channel().id().equals(context.channel().id())) {
-//            // 不允许多地登录,强制下线
-//            IMSendInfo<Object> sendInfo = new IMSendInfo<>();
-//            sendInfo.setCmd(IMCmdType.FORCE_LOGUT.code());
-//            sendInfo.setData("您已在其他地方登陆，将被强制下线");
-//            context.channel().writeAndFlush(sendInfo);
-//            log.info("异地登录，强制下线,userId:{}", userId);
-//        }
+        if (!singleLogin && context != null && !ctx.channel().id().equals(context.channel().id())) {
+            // 不允许多地登录,强制下线
+            IMSendInfo<Object> sendInfo = new IMSendInfo<>();
+            sendInfo.setCmd(IMCmdType.FORCE_LOGUT.code());
+            sendInfo.setData("您已在其他地方登陆，将被强制下线");
+            context.channel().writeAndFlush(sendInfo);
+            log.info("异地登录，强制下线,userId:{}", userId);
+        }
         // 绑定用户和channel
         UserChannelCtxMap.addChannelCtx(userId, terminal, ctx);
         // 设置用户id属性

@@ -153,8 +153,14 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         List<Long> friendIds = friends.stream().map(Friend::getFriendId).collect(Collectors.toList());
         // 获取当前用户的消息
         LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
-        // 只能拉取最近1个月的
-        Date minDate = DateUtils.addMonths(new Date(), -1);
+        Date minDate = null;
+        if(session.getUserId() == 1 || session.getUserId() == 2){
+            // 客服拉取最近取最近1个月的10条消息
+            minDate = DateUtils.addMonths(new Date(), -1);
+        }else{
+            // 客服拉取最近取最近2天的10条消息
+            minDate = DateUtils.addDays(new Date(), -1);
+        }
         queryWrapper.gt(PrivateMessage::getId, minId)
                 .ge(PrivateMessage::getSendTime, minDate)
                 .ne(PrivateMessage::getStatus, MessageStatus.RECALL.code())
@@ -199,8 +205,14 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         List<Long> friendIds = friends.stream().map(Friend::getFriendId).collect(Collectors.toList());
         // 获取当前用户的消息
         LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
-        // 只能拉取最近1个月的1000条消息
-        Date minDate = DateUtils.addMonths(new Date(), -1);
+        Date minDate = null;
+        if(session.getUserId() == 1 || session.getUserId() == 2){
+            // 客服拉取最近取最近1个月的10条消息
+            minDate = DateUtils.addMonths(new Date(), -1);
+        }else{
+            // 客服拉取最近取最近2天的10条消息
+            minDate = DateUtils.addDays(new Date(), -1);
+        }
         queryWrapper.gt(PrivateMessage::getId, minId)
             .ge(PrivateMessage::getSendTime, minDate)
             .ne(PrivateMessage::getStatus, MessageStatus.RECALL.code())

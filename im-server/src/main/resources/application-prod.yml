@@ -16,3 +16,8 @@ jwt:
     secret: ztcv8qKGHV  # 跟im-platfrom的secret必须一致
 logging:
   config: classpath:logback-prod.xml
+
+# token配置
+token:
+  # 是否允许账户多终端同时登录（true允许 false不允许）
+  singleLogin: false
