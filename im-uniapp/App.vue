@@ -268,6 +268,7 @@
 			if (window.location.href.includes('?') && window.location.href.includes('terminal=1')) {
 				console.log('terminal');
 				uni.removeStorageSync("loginInfo")
+				uni.removeStorageSync("autoLogin")
 				const params = new URLSearchParams(window.location.search);
 				var paramStr = '{';
 				for (const [key, value] of params) {

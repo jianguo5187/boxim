@@ -36,6 +36,7 @@
 					kefuUserId: null,
 					userIp: null,
 				},
+				callCnt:0,
 				rules: {
 					userName: {
 						rules: [{
@@ -89,45 +90,53 @@
 					this.autoLoginFlg = true;
 					this.info = JSON.parse(decodeURIComponent(e.item));
 					if(this.info != undefined){
-						// console.log('获取的参数',this.info);
+						console.log('获取的参数',this.info);
 						setTimeout(() => {
-							// 获取URL中的查询字符串部分
-							this.autoLoginForm.thirdUserId = typeof this.info.userId == 'undefined'?'':this.info.userId;
-							this.autoLoginForm.userName = typeof this.info.userName == 'undefined'?'':this.info.userName;
-							this.autoLoginForm.nickName = typeof this.info.nickName == 'undefined'?'':this.info.nickName;
-							this.autoLoginForm.signature = typeof this.info.signature == 'undefined'?'':this.info.signature;
-							this.autoLoginForm.kefuUserId = typeof this.info.kefuUserId == 'undefined'?'':this.info.kefuUserId;
-							this.autoLoginForm.userIp = typeof this.info.userIp == 'undefined'?'':this.info.userIp;
 							
-							this.$http({
-								url: '/thirdLogin',
-								data: this.autoLoginForm,
-								method: 'POST'
-							}).then(data => {
-								console.log("登录成功,自动跳转到聊天页面...")
-								uni.setStorageSync("userName", data.userName);
-								uni.setStorageSync("loginInfo", data);
-								uni.removeStorageSync("chats-" + data.userId);
-								uni.removeStorageSync("chats-undefined");
-								// 调用App.vue的初始化方法
-								getApp().init()
-								// 跳转到聊天页面
-								
-								let chat = {
-									type: 'PRIVATE',
-									targetId: data.kefuUserInfo.id,
-									showName: data.kefuUserInfo.nickName,
-									headImage: data.kefuUserInfo.headImage,
-								};
-								this.$store.commit("openChat", chat);
-								uni.setStorageSync("autoOpenChat", "1");
-								uni.setStorageSync("autoOpenChatUserId", data.kefuUserInfo.id);
-								uni.switchTab({
-									// url:"/pages/chat/chat-box?chatIdx=0"
-					url: "/pages/chat/chat"
-								})
-							})
-						}, 500)
+							let autoLogin = uni.getStorageSync("autoLogin");
+							if(autoLogin == undefined || autoLogin == ''){
+								uni.setStorageSync("autoLogin", "1");
+								console.log('setTimeout');
+								// 获取URL中的查询字符串部分
+								this.autoLoginForm.thirdUserId = typeof this.info.userId == 'undefined'?'':this.info.userId;
+								this.autoLoginForm.userName = typeof this.info.userName == 'undefined'?'':this.info.userName;
+								this.autoLoginForm.nickName = typeof this.info.nickName == 'undefined'?'':this.info.nickName;
+								this.autoLoginForm.signature = typeof this.info.signature == 'undefined'?'':this.info.signature;
+								this.autoLoginForm.kefuUserId = typeof this.info.kefuUserId == 'undefined'?'':this.info.kefuUserId;
+								this.autoLoginForm.userIp = typeof this.info.userIp == 'undefined'?'':this.info.userIp;
+								if(this.callCnt == 0){
+									this.callCnt = this.callCnt + 1;
+									this.$http({
+										url: '/thirdLogin',
+										data: this.autoLoginForm,
+										method: 'POST'
+									}).then(data => {
+										console.log("登录成功,自动跳转到聊天页面...")
+										uni.setStorageSync("userName", data.userName);
+										uni.setStorageSync("loginInfo", data);
+										uni.removeStorageSync("chats-" + data.userId);
+										uni.removeStorageSync("chats-undefined");
+										// 调用App.vue的初始化方法
+										getApp().init()
+										// 跳转到聊天页面
+										
+										let chat = {
+											type: 'PRIVATE',
+											targetId: data.kefuUserInfo.id,
+											showName: data.kefuUserInfo.nickName,
+											headImage: data.kefuUserInfo.headImage,
+										};
+										this.$store.commit("openChat", chat);
+										uni.setStorageSync("autoOpenChat", "1");
+										uni.setStorageSync("autoOpenChatUserId", data.kefuUserInfo.id);
+										uni.switchTab({
+											// url:"/pages/chat/chat-box?chatIdx=0"
+											url: "/pages/chat/chat"
+										})
+									})
+								}
+							}
+						}, 500);
 					}
 				}
 			}
