@@ -158,6 +158,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return vo;
     }
 
+    @Override
+    public LoginVO kefuAutoThirdLogin(LoginDTO dto) {
+        User user = this.findUserByUserName(dto.getUserName());
+        if (null == user) {
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "用户不存在");
+        }
+        // 生成token
+        UserSession session = BeanUtils.copyProperties(user, UserSession.class);
+        session.setUserId(user.getId());
+        session.setTerminal(dto.getTerminal());
+        String strJson = JSON.toJSONString(session);
+        String accessToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+        String refreshToken = JwtUtil.sign(user.getId(), strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+        LoginVO vo = new LoginVO();
+        vo.setAccessToken(accessToken);
+        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+        vo.setRefreshToken(refreshToken);
+        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        return vo;
+    }
+
     /**
      * 通过调用接口根据ip获取归属地
      */

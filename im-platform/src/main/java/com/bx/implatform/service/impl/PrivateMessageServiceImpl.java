@@ -344,6 +344,28 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
     }
 
     @Override
+    public Integer noAuthKefuNoReadCnt(NoAuthNoReadCntDto vo) {
+        if(vo.getKefuUserId() == null){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客服ID不能为空");
+        }
+
+        UserVO sendUser = userService.findUserById(vo.getKefuUserId());
+        if(sendUser == null){
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "客服用户不存在，请联系管理员。");
+        }
+
+        // 获取当前用户的消息
+        LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
+        List<Integer> status = new ArrayList<>();
+        status.add(MessageStatus.SENDED.code());
+        status.add(MessageStatus.UNSEND.code());
+        queryWrapper.eq(PrivateMessage::getRecvId, sendUser.getId())
+                .in(PrivateMessage::getStatus,status);
+        List<PrivateMessage> messages = this.list(queryWrapper);
+        return messages.size();
+    }
+
+    @Override
     public Integer getNoReadCnt() {
         UserSession session = SessionContext.getSession();
         // 获取当前用户的消息

@@ -37,6 +37,12 @@ public class LoginController {
         return ResultUtils.success(vo);
     }
 
+    @PostMapping("/kefuAutoThirdLogin")
+    @ApiOperation(value = "客服自动登录", notes = "客服自动登录")
+    public Result kefuAutoThirdLogin(@RequestBody LoginDTO dto) {
+        LoginVO vo = userService.kefuAutoThirdLogin(dto);
+        return ResultUtils.success(vo);
+    }
 
     @PutMapping("/refreshToken")
     @ApiOperation(value = "刷新token", notes = "用refreshtoken换取新的token")
@@ -64,5 +70,11 @@ public class LoginController {
     @ApiOperation(value = "未读消息件数", notes = "未读消息件数")
     public Result<Integer> noAuthNoReadCnt(@Valid @RequestBody NoAuthNoReadCntDto vo) {
         return ResultUtils.success(privateMessageService.noAuthNoReadCnt(vo));
+    }
+
+    @PostMapping("/noAuthKefuNoReadCnt")
+    @ApiOperation(value = "客服未读消息件数", notes = "客服未读消息件数")
+    public Result<Integer> noAuthKefuNoReadCnt(@Valid @RequestBody NoAuthNoReadCntDto vo) {
+        return ResultUtils.success(privateMessageService.noAuthKefuNoReadCnt(vo));
     }
 }

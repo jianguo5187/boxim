@@ -32,6 +32,14 @@ public interface IUserService extends IService<User> {
     ThirdLoginVO thirdLogin(ThirdLoginDTO dto);
 
     /**
+     * 用户登录
+     *
+     * @param dto 登录dto
+     * @return 登录token
+     */
+    LoginVO kefuAutoThirdLogin(LoginDTO dto);
+
+    /**
      * 修改用户密码
      *
      * @param dto 修改密码dto

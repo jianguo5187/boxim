@@ -68,5 +68,7 @@ public interface IPrivateMessageService extends IService<PrivateMessage> {
 
     Integer noAuthNoReadCnt(NoAuthNoReadCntDto vo);
 
+    Integer noAuthKefuNoReadCnt(NoAuthNoReadCntDto vo);
+
     Integer getNoReadCnt();
 }
