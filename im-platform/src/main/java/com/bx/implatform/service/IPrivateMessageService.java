@@ -71,4 +71,8 @@ public interface IPrivateMessageService extends IService<PrivateMessage> {
     Integer noAuthKefuNoReadCnt(NoAuthNoReadCntDto vo);
 
     Integer getNoReadCnt();
+
+    void deleteOneDayBeforeMessage();
+
+    void deleteThreeDayBeforeMessage();
 }

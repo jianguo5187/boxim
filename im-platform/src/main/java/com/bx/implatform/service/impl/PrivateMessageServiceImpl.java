@@ -379,4 +379,20 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         List<PrivateMessage> messages = this.list(queryWrapper);
         return messages.size();
     }
+
+    @Override
+    public void deleteOneDayBeforeMessage() {
+        LambdaQueryWrapper<PrivateMessage> wrapper = Wrappers.lambdaQuery();
+        Date minDate = DateUtils.addDays(new Date(), -1);
+        wrapper.lt(PrivateMessage::getSendTime, minDate);
+        this.remove(wrapper);
+    }
+
+    @Override
+    public void deleteThreeDayBeforeMessage() {
+        LambdaQueryWrapper<PrivateMessage> wrapper = Wrappers.lambdaQuery();
+        Date minDate = DateUtils.addDays(new Date(), -3);
+        wrapper.lt(PrivateMessage::getSendTime, minDate);
+        this.remove(wrapper);
+    }
 }

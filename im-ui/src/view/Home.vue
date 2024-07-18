@@ -27,6 +27,9 @@
         <el-menu-item title="修改密码" @click="showChangePassword()">
           <span class="el-icon-edit"></span>
         </el-menu-item>
+        <el-menu-item title="清空聊天数据" @click="showClearRecord()">
+          <span class="el-icon-delete"></span>
+        </el-menu-item>
 				<el-menu-item title="设置" @click="showSetting()">
 					<span class="el-icon-setting"></span>
 				</el-menu-item>
@@ -40,6 +43,7 @@
 		</el-main>
 		<setting :visible="showSettingDialog" @close="closeSetting()"></setting>
     <change-password :visible="showChangePasswordDialog" @close="closeChangePassword()"></change-password>
+    <clear-chat-record :visible="showClearRecordDialog" @close="closeClearRecord()"/>
 		<user-info v-show="uiStore.userInfo.show" :pos="uiStore.userInfo.pos" :user="uiStore.userInfo.user"
 			@close="$store.commit('closeUserInfoBox')"></user-info>
 		<full-image :visible="uiStore.fullImage.show" :url="uiStore.fullImage.url"
@@ -57,6 +61,7 @@
 	import FullImage from '../components/common/FullImage.vue';
 	import ChatPrivateVideo from '../components/chat/ChatPrivateVideo.vue';
 	import ChatVideoAcceptor from '../components/chat/ChatVideoAcceptor.vue';
+  import ClearChatRecord from "@/components/setting/ClearChatRecord.vue";
 
 	export default {
 		components: {
@@ -66,12 +71,14 @@
 			UserInfo,
 			FullImage,
 			ChatPrivateVideo,
-			ChatVideoAcceptor
+			ChatVideoAcceptor,
+      ClearChatRecord
 		},
 		data() {
 			return {
 				showSettingDialog: false,
         showChangePasswordDialog: false,
+        showClearRecordDialog:false,
 				lastPlayAudioTime: new Date().getTime() - 1000,
 			}
 		},
@@ -301,6 +308,12 @@
       },
       closeChangePassword() {
         this.showChangePasswordDialog = false;
+      },
+      showClearRecord() {
+        this.showClearRecordDialog = true;
+      },
+      closeClearRecord() {
+        this.showClearRecordDialog = false;
       },
 			loadFriendInfo(id) {
 				return new Promise((resolve, reject) => {

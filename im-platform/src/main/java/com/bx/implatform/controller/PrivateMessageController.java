@@ -77,5 +77,19 @@ public class PrivateMessageController {
     public Result noReadCnt() {
         return ResultUtils.success(privateMessageService.getNoReadCnt());
     }
+
+    @DeleteMapping("/deleteOneDayBeforeMessage")
+    @ApiOperation(value = "删除1天前数据", notes = "删除1天前数据")
+    public Result deleteOneDayBeforeMessage() {
+        privateMessageService.deleteOneDayBeforeMessage();
+        return ResultUtils.success();
+    }
+
+    @DeleteMapping("/deleteThreeDayBeforeMessage")
+    @ApiOperation(value = "删除3天前数据", notes = "删除3天前数据")
+    public Result deleteThreeDayBeforeMessage() {
+        privateMessageService.deleteThreeDayBeforeMessage();
+        return ResultUtils.success();
+    }
 }
 
