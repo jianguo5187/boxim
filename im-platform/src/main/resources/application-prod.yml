@@ -7,9 +7,12 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
 #    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lckf?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-    username: lckf
-    password: TKLwakzzMGsbLtdY
+#    url: jdbc:mysql://localhost:3306/lckf?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#    username: lckf
+#    password: TKLwakzzMGsbLtdY
+    url: jdbc:mysql://localhost:3306/boxim?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: boxim
+    password: 123456
   redis:
     host: localhost
     # 端口，默认为6379
@@ -29,7 +32,9 @@ mybatis-plus:
     - classpath*:mapper/*.xml
 minio:
   endpoint: http://127.0.0.1:9090
-  public: http://43.129.82.76:9090
+  public: http://43.159.197.22:9090
+  #  public: http://43.129.82.76:9090
+#  public: http://43.132.168.72:9090
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: box-im
