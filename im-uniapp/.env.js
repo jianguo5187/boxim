@@ -19,6 +19,7 @@ if(ENV=="PROD"){
 	// UNI_APP.BASE_URL = "http://43.129.82.76:81/api";
 	// UNI_APP.WS_URL = "ws://43.129.82.76:8878/im";
 	// UNI_APP.BASE_URL = "http://43.132.168.72:82/api";
-	UNI_APP.WS_URL = "ws://43.132.168.72:8878/im";
+	// UNI_APP.WS_URL = "ws://43.132.168.72:8878/im";
+	UNI_APP.WS_URL = "ws://43.132.182.230:8878/im";
 }
 export default UNI_APP
