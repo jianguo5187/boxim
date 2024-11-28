@@ -31,14 +31,14 @@ mybatis-plus:
   mapper-locations:
     - classpath*:mapper/*.xml
 minio:
-#  endpoint: http://127.0.0.1:9090
-#  public: http://43.132.126.240:9090
+  endpoint: http://127.0.0.1:9090
+  public: http://129.226.141.146:9090
   #  public: http://43.129.82.76:9090
 #  public: http://43.132.168.72:9090
 #  endpoint: http://127.0.0.1:9090
 #  public: http://47.57.188.97:9090
-  endpoint: http://127.0.0.1:9090
-  public: https://ngbt.qdcspy.shop/file
+#  endpoint: http://127.0.0.1:9090
+#  public: https://ngbt.qdcspy.shop/file
   accessKey: minioadmin
   secretKey: minioadmin
   bucketName: box-im

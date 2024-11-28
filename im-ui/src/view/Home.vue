@@ -268,12 +268,17 @@
 				location.href = "/";
 			},
       getNoReadCnt() {
+        console.log("getNoReadCnt");
+        console.log(this.unreadCount);
+        if(this.unreadCount > 0){
+          this.playAudioTip();
+        }
         this.$http({
           url: `/message/private/noReadCnt`,
           method: 'get'
         }).then((noReadCnt) => {
-          if(noReadCnt > 0){
-            this.playAudioTip()
+          if(noReadCnt != this.unreadCount){
+            this.pullPrivateOfflineMessage(0);
           }
         });
       },
