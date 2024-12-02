@@ -277,13 +277,14 @@
           url: `/message/private/noReadCnt`,
           method: 'get'
         }).then((noReadCnt) => {
+          console.log('noReadCnt：' + noReadCnt);
           if(noReadCnt != this.unreadCount){
             this.pullPrivateOfflineMessage(0);
           }
         });
       },
 			playAudioTip() {
-				// if (new Date().getTime() - this.lastPlayAudioTime > 1000) {
+				if (new Date().getTime() - this.lastPlayAudioTime > 1000) {
           console.log("playAudioTip");
 					this.lastPlayAudioTime = new Date().getTime();
 					let audio = new Audio();
@@ -299,7 +300,7 @@
             // 强制刷新页面
             location.reload();
           });
-				// }
+				}
 
 			},
 			showSetting() {
