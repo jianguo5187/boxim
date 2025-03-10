@@ -6,6 +6,8 @@ import com.bx.implatform.result.Result;
 import com.bx.implatform.result.ResultUtils;
 import com.bx.implatform.service.IPrivateMessageService;
 import com.bx.implatform.vo.PrivateMessageVO;
+import com.bx.implatform.vo.PrivateReadedMessageVO;
+import com.bx.implatform.dto.PrivateReadedMessageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,13 @@ public class PrivateMessageController {
     @ApiOperation(value = "发送消息", notes = "发送私聊消息")
     public Result<Long> sendMessage(@Valid @RequestBody PrivateMessageDTO vo) {
         return ResultUtils.success(privateMessageService.sendMessage(vo));
+    }
+
+
+    @PostMapping("/sendReaded")
+    @ApiOperation(value = "发送已读消息", notes = "发送私聊消息")
+    public Result<PrivateReadedMessageVO> sendReadedMessage(@Valid @RequestBody PrivateReadedMessageDTO vo) {
+        return ResultUtils.success(privateMessageService.sendReadedMessage(vo));
     }
 
 

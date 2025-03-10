@@ -30,7 +30,7 @@
         <el-menu-item title="清空聊天数据" @click="showClearRecord()">
           <span class="el-icon-delete"></span>
         </el-menu-item>
-				<el-menu-item title="设置" @click="showSetting()">
+				<el-menu-item title="设置" @click="showAnswerMessageSetting()">
 					<span class="el-icon-setting"></span>
 				</el-menu-item>
 			</el-menu>
@@ -44,6 +44,7 @@
 		<setting :visible="showSettingDialog" @close="closeSetting()"></setting>
     <change-password :visible="showChangePasswordDialog" @close="closeChangePassword()"></change-password>
     <clear-chat-record :visible="showClearRecordDialog" @close="closeClearRecord()"/>
+    <answer-message-setting :visible="showAnswerMessageSettingDialog" @close="closeAnswerMessageSetting()"/>
 		<user-info v-show="uiStore.userInfo.show" :pos="uiStore.userInfo.pos" :user="uiStore.userInfo.user"
 			@close="$store.commit('closeUserInfoBox')"></user-info>
 		<full-image :visible="uiStore.fullImage.show" :url="uiStore.fullImage.url"
@@ -62,6 +63,7 @@
 	import ChatPrivateVideo from '../components/chat/ChatPrivateVideo.vue';
 	import ChatVideoAcceptor from '../components/chat/ChatVideoAcceptor.vue';
   import ClearChatRecord from "@/components/setting/ClearChatRecord.vue";
+  import AnswerMessageSetting from "../components/setting/AnswerMessageSetting.vue";
 
 	export default {
 		components: {
@@ -72,13 +74,15 @@
 			FullImage,
 			ChatPrivateVideo,
 			ChatVideoAcceptor,
-      ClearChatRecord
+      ClearChatRecord,
+      AnswerMessageSetting,
 		},
 		data() {
 			return {
 				showSettingDialog: false,
         showChangePasswordDialog: false,
         showClearRecordDialog:false,
+        showAnswerMessageSettingDialog: false,
 				lastPlayAudioTime: new Date().getTime() - 1000,
 			}
 		},
@@ -320,6 +324,12 @@
       },
       closeClearRecord() {
         this.showClearRecordDialog = false;
+      },
+      showAnswerMessageSetting() {
+        this.showAnswerMessageSettingDialog = true;
+      },
+      closeAnswerMessageSetting() {
+        this.showAnswerMessageSettingDialog = false;
       },
 			loadFriendInfo(id) {
 				return new Promise((resolve, reject) => {

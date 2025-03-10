@@ -1,6 +1,7 @@
 package com.bx.implatform.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -12,6 +13,8 @@ import com.bx.imcommon.contant.IMConstant;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.model.IMGroupMessage;
 import com.bx.imcommon.model.IMPrivateMessage;
+import com.bx.implatform.dto.PrivateReadedMessageDTO;
+import com.bx.implatform.service.IDefaultMessageService;
 import com.bx.imcommon.model.IMUserInfo;
 import com.bx.implatform.dto.NoAuthNoReadCntDto;
 import com.bx.implatform.dto.PrivateMessageDTO;
@@ -30,9 +33,7 @@ import com.bx.implatform.session.SessionContext;
 import com.bx.implatform.session.UserSession;
 import com.bx.implatform.util.BeanUtils;
 import com.bx.implatform.util.SensitiveFilterUtil;
-import com.bx.implatform.vo.GroupMessageVO;
-import com.bx.implatform.vo.PrivateMessageVO;
-import com.bx.implatform.vo.UserVO;
+import com.bx.implatform.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -51,6 +52,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
     private final IMClient imClient;
     private final SensitiveFilterUtil sensitiveFilterUtil;
     private final IUserService userService;
+    private final IDefaultMessageService defaultMessageService;
 
     @Override
     public Long sendMessage(PrivateMessageDTO dto) {
@@ -59,6 +61,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         if (Boolean.FALSE.equals(isFriends)) {
             throw new GlobalException(ResultCode.PROGRAM_ERROR, "您已不是对方好友，无法发送消息");
         }
+        UserVO sendUser = userService.findUserById(session.getUserId());
         // 保存消息
         PrivateMessage msg = BeanUtils.copyProperties(dto, PrivateMessage.class);
         msg.setSendId(session.getUserId());
@@ -71,14 +74,177 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         // 推送消息
         PrivateMessageVO msgInfo = BeanUtils.copyProperties(msg, PrivateMessageVO.class);
         IMPrivateMessage<PrivateMessageVO> sendMessage = new IMPrivateMessage<>();
-        sendMessage.setSender(new IMUserInfo(session.getUserId(), session.getTerminal()));
+        // 玩家的时候固定推送PC端
+        if(sendUser.getType() == 2){
+            sendMessage.setSender(new IMUserInfo(session.getUserId(), 1));
+        }else{
+            sendMessage.setSender(new IMUserInfo(session.getUserId(), session.getTerminal()));
+        }
         sendMessage.setRecvId(msgInfo.getRecvId());
         sendMessage.setSendToSelf(true);
         sendMessage.setData(msgInfo);
         sendMessage.setSendResult(true);
         imClient.sendPrivateMessage(sendMessage);
         log.info("发送私聊消息，发送id:{},接收id:{}，内容:{}", session.getUserId(), dto.getRecvId(), dto.getContent());
+
+        //只判断玩家发送的信息，去自动回复
+        if(sendUser.getType() == 2){
+            //获取自动回复信息
+            List<DefaultMessageVO> defaultMessages = defaultMessageService.findAutoMessage(content);
+            boolean autoAnserFlg = false;
+            for(DefaultMessageVO defaultMessageVO : defaultMessages){
+
+                //判断是否有文字信息
+                if(StringUtils.isNotEmpty(defaultMessageVO.getAnswerContent())){
+
+                    // 保存消息
+                    PrivateMessage autoAnswerMsg = BeanUtils.copyProperties(dto, PrivateMessage.class);
+                    autoAnswerMsg.setSendId(dto.getRecvId());
+                    autoAnswerMsg.setRecvId(session.getUserId());
+
+                    String answerContent = "";
+                    answerContent = defaultMessageVO.getAnswerContent();
+                    autoAnswerMsg.setType(0);
+
+                    autoAnswerMsg.setContent(answerContent);
+                    autoAnswerMsg.setStatus(MessageStatus.UNSEND.code());
+                    autoAnswerMsg.setSendTime(new Date());
+                    this.save(autoAnswerMsg);
+                    // 过滤消息内容
+                    String autoAnswerContent = sensitiveFilterUtil.filter(answerContent);
+                    autoAnswerMsg.setContent(autoAnswerContent);
+                    // 推送消息
+                    PrivateMessageVO autoAnswerMsgInfo = BeanUtils.copyProperties(autoAnswerMsg, PrivateMessageVO.class);
+                    IMPrivateMessage<PrivateMessageVO> autoAnswerSendMessage = new IMPrivateMessage<>();
+                    autoAnswerSendMessage.setSender(new IMUserInfo(dto.getRecvId(), 0)); //0:PC
+                    autoAnswerSendMessage.setRecvId(session.getUserId());
+                    autoAnswerSendMessage.setSendToSelf(true);
+                    autoAnswerSendMessage.setData(autoAnswerMsgInfo);
+                    autoAnswerSendMessage.setSendResult(true);
+                    imClient.sendPrivateMessage(autoAnswerSendMessage);
+                    log.info("发送私聊消息，发送id:{},接收id:{}，内容:{}", dto.getRecvId(), session.getUserId(), answerContent);
+                }
+
+                //判断是否有图片信息
+                if(StringUtils.isNotEmpty(defaultMessageVO.getAnswerImgContent())){
+
+                    // 保存消息
+                    PrivateMessage autoAnswerMsg = BeanUtils.copyProperties(dto, PrivateMessage.class);
+                    autoAnswerMsg.setSendId(dto.getRecvId());
+                    autoAnswerMsg.setRecvId(session.getUserId());
+                    String answerContent = "";
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("originUrl", defaultMessageVO.getAnswerImgContent());
+                    jsonObject.put("thumbUrl", defaultMessageVO.getAnswerImgContent());
+                    answerContent = jsonObject.toString();
+                    autoAnswerMsg.setType(1);
+
+                    autoAnswerMsg.setContent(answerContent);
+                    autoAnswerMsg.setStatus(MessageStatus.UNSEND.code());
+                    autoAnswerMsg.setSendTime(new Date());
+                    this.save(autoAnswerMsg);
+                    // 过滤消息内容
+                    String autoAnswerContent = sensitiveFilterUtil.filter(answerContent);
+                    autoAnswerMsg.setContent(autoAnswerContent);
+                    // 推送消息
+                    PrivateMessageVO autoAnswerMsgInfo = BeanUtils.copyProperties(autoAnswerMsg, PrivateMessageVO.class);
+                    IMPrivateMessage<PrivateMessageVO> autoAnswerSendMessage = new IMPrivateMessage<>();
+                    autoAnswerSendMessage.setSender(new IMUserInfo(dto.getRecvId(), 0)); //0:PC
+                    autoAnswerSendMessage.setRecvId(session.getUserId());
+                    autoAnswerSendMessage.setSendToSelf(true);
+                    autoAnswerSendMessage.setData(autoAnswerMsgInfo);
+                    autoAnswerSendMessage.setSendResult(true);
+                    imClient.sendPrivateMessage(autoAnswerSendMessage);
+                    log.info("发送私聊消息，发送id:{},接收id:{}，内容:{}", dto.getRecvId(), session.getUserId(), answerContent);
+                }
+
+//                readedMessage(dto.getRecvId());
+                autoAnserFlg = true;
+            }
+//            if(autoAnserFlg){
+//                autoReadedMessage(dto.getRecvId(),session.getUserId());
+//            }
+        }
         return msg.getId();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void autoReadedMessage(Long kefuUserId,Long playUserId) {
+//        UserSession session = SessionContext.getSession();
+        // 推送消息给自己，清空会话列表上的已读数量
+        PrivateMessageVO msgInfo = new PrivateMessageVO();
+        msgInfo.setType(MessageType.READED.code());
+        msgInfo.setSendId(kefuUserId);
+        msgInfo.setRecvId(playUserId);
+        IMPrivateMessage<PrivateMessageVO> sendMessage = new IMPrivateMessage<>();
+        sendMessage.setData(msgInfo);
+        sendMessage.setSender(new IMUserInfo(kefuUserId, 0));
+        sendMessage.setRecvId(kefuUserId);
+        sendMessage.setSendToSelf(false);
+        sendMessage.setSendResult(false);
+        imClient.sendPrivateMessage(sendMessage);
+        // 推送回执消息给对方，更新已读状态
+        msgInfo = new PrivateMessageVO();
+        msgInfo.setType(MessageType.RECEIPT.code());
+        msgInfo.setSendId(kefuUserId);
+        msgInfo.setRecvId(playUserId);
+        sendMessage = new IMPrivateMessage<>();
+        sendMessage.setSender(new IMUserInfo(kefuUserId, 0));
+        sendMessage.setRecvId(playUserId);
+        sendMessage.setSendToSelf(false);
+        sendMessage.setSendResult(false);
+        sendMessage.setData(msgInfo);
+        imClient.sendPrivateMessage(sendMessage);
+        // 修改消息状态为已读
+        LambdaUpdateWrapper<PrivateMessage> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(PrivateMessage::getSendId, playUserId)
+                .eq(PrivateMessage::getRecvId, kefuUserId)
+                .eq(PrivateMessage::getStatus, MessageStatus.SENDED.code())
+                .set(PrivateMessage::getStatus, MessageStatus.READED.code());
+        this.update(updateWrapper);
+        log.info("消息已读，接收方id:{},发送方id:{}", kefuUserId, playUserId);
+    }
+
+    @Override
+    public PrivateReadedMessageVO sendReadedMessage(PrivateReadedMessageDTO dto){
+        PrivateReadedMessageVO vo = new PrivateReadedMessageVO();
+        UserSession session = SessionContext.getSession();
+        Boolean isFriends = friendService.isFriend(session.getUserId(), dto.getRecvId());
+        if (Boolean.FALSE.equals(isFriends)) {
+            throw new GlobalException(ResultCode.PROGRAM_ERROR, "您已不是对方好友，无法发送消息");
+        }
+        // 保存发送消息
+        PrivateMessage msg = BeanUtils.copyProperties(dto, PrivateMessage.class);
+        msg.setSendId(session.getUserId());
+        msg.setStatus(MessageStatus.READED.code());
+        msg.setSendTime(new Date());
+        this.save(msg);
+        vo.setSendMessageId(msg.getId());
+
+        if(!StringUtils.isEmpty(dto.getAnswerContent())){
+            PrivateMessage answerMsg = BeanUtils.copyProperties(dto, PrivateMessage.class);
+            answerMsg.setRecvId(session.getUserId());
+            answerMsg.setSendId(dto.getRecvId());
+            answerMsg.setContent(dto.getAnswerContent());
+            answerMsg.setStatus(MessageStatus.READED.code());
+            answerMsg.setSendTime(new Date());
+            this.save(answerMsg);
+            vo.setAnswerMessageId(answerMsg.getId());
+        }
+
+        if(!StringUtils.isEmpty(dto.getAnswerImgContent())){
+            PrivateMessage answerMsg = BeanUtils.copyProperties(dto, PrivateMessage.class);
+            answerMsg.setRecvId(session.getUserId());
+            answerMsg.setSendId(dto.getRecvId());
+            answerMsg.setContent(dto.getAnswerImgContent());
+            answerMsg.setStatus(MessageStatus.READED.code());
+            answerMsg.setSendTime(new Date());
+            answerMsg.setType(1);
+            this.save(answerMsg);
+            vo.setAnswerImgMessageId(answerMsg.getId());
+        }
+
+        return vo;
     }
 
     @Override

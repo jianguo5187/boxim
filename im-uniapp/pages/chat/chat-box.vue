@@ -12,7 +12,7 @@
 					<chat-message-item v-if="idx>=showMinIdx" :headImage="headImage(msgInfo)" @call="onRtCall(msgInfo)"
 						:showName="showName(msgInfo)" @recall="onRecallMessage" @delete="onDeleteMessage"
 						@longPressHead="onLongPressHead(msgInfo)" @download="onDownloadFile" :id="'chat-item-'+idx"
-						:msgInfo="msgInfo" :groupMembers="groupMembers">
+						:msgInfo="msgInfo" :groupMembers="groupMembers" @autoAnswer="autoAnswer">
 					</chat-message-item>
 				</view>
 			</scroll-view>
@@ -61,15 +61,19 @@
 					</image-upload>
 					<view class="tool-name">拍摄</view>
 				</view>
+				<view class="chat-tools-item" @click="onShowQuestion()">
+					<view class="tool-icon iconfont icon-receipt"></view>
+					<view class="tool-name">常见问题</view>
+				</view>
 				<!-- #ifndef APP-PLUS -->
 				<!-- APP 暂时不支持选择文件 -->
-				<view class="chat-tools-item">
+				<!-- <view class="chat-tools-item">
 					<file-upload :onBefore="onUploadFileBefore" :onSuccess="onUploadFileSuccess"
 						:onError="onUploadFileFail">
 						<view class="tool-icon iconfont icon-folder"></view>
 					</file-upload>
 					<view class="tool-name">文件</view>
-				</view>
+				</view> -->
 				<!-- #endif -->
 				<!-- <view class="chat-tools-item" @click="onVoiceInput()">
 					<view class="tool-icon iconfont icon-microphone"></view>
@@ -103,6 +107,13 @@
 		<chat-at-box ref="atBox" :ownerId="group.ownerId" :members="groupMembers"
 			@complete="onAtComplete"></chat-at-box>
 	</view>
+	<uni-popup ref="popup">
+		<scroll-view class="scroll-view pop" scroll-y="true">
+			<view v-for="q in questions" @click="onHideQuestion(q.content)" :key="q.id" class="popup-use">
+				{{ q.content}}
+			</view>
+		</scroll-view>
+	</uni-popup>
 </template>
 
 <script>
@@ -123,7 +134,10 @@
 				keyboardHeight: 322,
 				atUserIds: [],
 				recordText: "",
-				showMinIdx: 0 // 下标小于showMinIdx的消息不显示，否则可能很卡
+				showMinIdx: 0, // 下标小于showMinIdx的消息不显示，否则可能很卡
+				questions:[],
+				execGetQuestionflag :true,
+				waitGetQuestionCnt:0,
 			}
 		},
 		methods: {
@@ -218,7 +232,7 @@
 					return msgInfo.selfSend ? this.mine.nickName : this.chat.showName
 				}
 			},
-			sendTextMessage() {
+			sendTextMessage(autoMessageFlg) {
 				if (!this.sendText.trim() && this.atUserIds.length == 0) {
 					return uni.showToast({
 						title: "不能发送空白信息",
@@ -247,6 +261,9 @@
 					msgInfo.selfSend = true;
 					msgInfo.readedCount = 0,
 						msgInfo.status = this.$enums.MESSAGE_STATUS.UNSEND;
+					if(autoMessageFlg){
+						msgInfo.hiddenReadFlg = true;
+					}
 					this.$store.commit("insertMessage", msgInfo);
 					// 会话置顶
 					this.moveChatToTop();
@@ -587,6 +604,157 @@
 				let info = uni.getSystemInfoSync()
 				let px = info.windowWidth * rpx / 750;
 				return Math.floor(rpx);
+			},
+			checkExecGetQuestion(){
+				let size = this.chat.messages.length;
+				if((size > 0 || this.waitGetQuestionCnt > 5) && this.execGetQuestionflag){
+					this.execGetQuestionflag = false;
+					this.onGetQuestion();
+				}else{
+					setTimeout(() => {
+						this.waitGetQuestionCnt++
+					},1000);
+				}
+			},
+			onGetQuestion(){
+				this.$http({
+					url: '/defaultMessage/loadAllDefaultMessage',
+					method: 'GET',
+				}).then((data) => {
+					console.log('questions: ' + data);
+					this.questions = data;
+					
+					let initWelcomeMsgFlg = uni.getStorageSync("initWelcomeMsgFlg");
+					if(initWelcomeMsgFlg == '1'){
+						
+						let msgInfo = {
+							content: "常见问题：",
+							atUserIds: this.isReceipt,
+							type: 0,
+							contexts:[]
+						}
+						msgInfo.contexts.push({content:"常见问题：",autoMessageFlg:false})
+						for(var i=0;i<data.length;i++){
+							msgInfo.content = msgInfo.content + '<br><span>' + (i+1) + "." + data[i].content + "</span>";
+							msgInfo.contexts.push({content:data[i].content,autoMessageFlg:true})
+						}
+						msgInfo.id = 0;
+						msgInfo.sendTime = new Date().getTime();
+						msgInfo.sendId = this.chat.targetId;
+						msgInfo.selfSend = false;
+						msgInfo.readedCount = 0,
+						msgInfo.status = this.$enums.MESSAGE_STATUS.SENDED;
+						msgInfo.autoMessageFlg = true;
+						this.$store.commit("insertMessage", msgInfo);
+					}
+				})
+			},
+			onShowQuestion(){
+				this.$refs['popup'].open();
+			},
+			onHideQuestion(message){
+				this.sendText = message;
+				this.sendTextMessage();
+				this.$refs['popup'].close();
+			},
+			autoAnswer(content){
+				console.log('autoAnswer')
+				this.sendText = content;
+				this.sendAutoAnswerMessage(true,content);
+			},
+			sendAutoAnswerMessage(autoMessageFlg,content) {
+				var autoAnswerMessage = "";
+				var autoAnswerImgMessage = "";
+				for(var i=0;i<this.questions.length;i++){
+					var question = this.questions[i];
+					if(question.content == content){
+						autoAnswerMessage = question.answerContent;
+						if(question.answerImgContent && question.answerImgContent.length > 0){
+							let autoAnswerImgData = {
+								originUrl: question.answerImgContent,
+								thumbUrl: question.answerImgContent
+							}
+							autoAnswerImgMessage = JSON.stringify(autoAnswerImgData);
+						}
+					}
+				}
+				console.log('sendAutoAnswerMessage');
+				let receiptText = this.isReceipt ? "【回执消息】" : "";
+				let atText = this.createAtText();
+				let sendReadedInfo = {
+					content: receiptText + this.sendText + atText,
+					answerContent: autoAnswerMessage,
+					answerImgContent: autoAnswerImgMessage,
+					type: 0
+				}
+				
+				let msgInfo = {
+					content: receiptText + this.sendText + atText,
+					atUserIds: this.atUserIds,
+					receipt: this.isReceipt,
+					type: 0
+				}
+				// 填充对方id
+				this.fillTargetId(msgInfo, this.chat.targetId);
+				this.fillTargetId(sendReadedInfo, this.chat.targetId);
+				this.sendText = "";
+				this.$http({
+					url: `/message/private/sendReaded`,
+					method: 'POST',
+					data: sendReadedInfo
+				}).then((data) => {
+					msgInfo.id = data.sendMessageId;
+					msgInfo.sendTime = new Date().getTime();
+					msgInfo.sendId = this.$store.state.userStore.userInfo.id;
+					msgInfo.selfSend = true;
+					msgInfo.readedCount = 0;
+					msgInfo.status = this.$enums.MESSAGE_STATUS.READED;
+					if(autoMessageFlg){
+						msgInfo.hiddenReadFlg = true;
+					}
+					this.$store.commit("insertMessage", msgInfo);
+					
+					if(autoAnswerMessage != ""){
+						let autoMsgInfo = {
+							id: data.answerMessageId,
+							content: autoAnswerMessage,
+							type: 0,
+							sendTime: (new Date().getTime() + 100),
+							sendId: msgInfo.recvId,
+							recvId: this.$store.state.userStore.userInfo.id,
+							selfSend: false,
+							status: this.$enums.MESSAGE_STATUS.READED,
+						}
+						this.$store.commit("insertMessage", autoMsgInfo);
+					}
+					if(autoAnswerImgMessage != ""){
+						
+						let autoImgMsgInfo = {
+							id: data.answerImgMessageId,
+							content: autoAnswerImgMessage,
+							type: 1,
+							sendTime: (new Date().getTime() + 100),
+							sendId: msgInfo.recvId,
+							recvId: this.$store.state.userStore.userInfo.id,
+							selfSend: false,
+							status: this.$enums.MESSAGE_STATUS.READED,
+						}
+						this.$store.commit("insertMessage", autoImgMsgInfo);
+					}
+					
+					// 会话置顶
+					this.moveChatToTop();
+					this.sendText = "";
+				}).finally(() => {
+					// 滚动到底部
+					this.scrollToBottom();
+					// 清空@用户列表
+					this.atUserIds = [];
+					this.isReceipt = false;
+				});
+			},
+			handClickItemMessage(alert){
+				alert(123);
 			}
 		},
 		computed: {
@@ -673,6 +841,10 @@
 			this.isReceipt = false;
 			var a =  document.getElementsByClassName('uni-page-head-hd')[0]
 			a.style.display = 'none'
+			
+			this.$nextTick(() => {
+				setInterval(this.checkExecGetQuestion,1);
+			})
 			// this.$nextTick(() => {
 			// })
 			// // 聊天数据
@@ -868,5 +1040,34 @@
 			}
 
 		}
+	}
+	.scroll-view {
+	  white-space: nowrap;
+	  width: 100%;
+	}
+	.scroll-item {
+	  display: inline-block;
+	  width: 200px;
+	  margin-right: 10px;
+	  background-color: #f0f0f0;
+	  text-align: center;
+	  line-height: 50px;
+	}
+	.pop{
+		width: 100%;
+		height: 80%;
+		background-color: beige;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.popup-use{
+		padding: 24px 30px;
+		width: 290px;
+		display: flex;
+		justify-content: center;
+		letter-spacing: 2px;
+		border: 1px solid #9c8fcb;
+		columns: #ffffffdb;
 	}
 </style>

@@ -267,6 +267,11 @@
 		onLaunch(e) {
 			if (window.location.href.includes('?') && window.location.href.includes('terminal=1')) {
 				console.log('terminal');
+				if(window.location.href.includes('#/pages/chat/chat-box')){
+					window.location.href = window.location.href.substr(0,window.location.href.indexOf('#'));
+				}
+				
+				uni.setStorageSync("initWelcomeMsgFlg", "1");
 				uni.removeStorageSync("loginInfo")
 				uni.removeStorageSync("autoLogin")
 				const params = new URLSearchParams(window.location.search);

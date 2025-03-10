@@ -10,9 +10,12 @@ spring:
 #    url: jdbc:mysql://localhost:3306/lckf?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #    username: lckf
 #    password: P5b6nknrBzNSW7SH
-    url: jdbc:mysql://localhost:3306/boxim?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-    username: boxim
-    password: 123456
+#    url: jdbc:mysql://localhost:3306/boxim?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#    username: boxim
+#    password: 123456
+    url: jdbc:mysql://localhost:3306/kefu517?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: kefu517
+    password: EdkbCFYxXWtK8WnR
   redis:
     host: localhost
     # 端口，默认为6379
@@ -32,7 +35,7 @@ mybatis-plus:
     - classpath*:mapper/*.xml
 minio:
   endpoint: http://127.0.0.1:9090
-  public: http://129.226.141.146:9090
+  public: http://8.212.123.221:9090
   #  public: http://43.129.82.76:9090
 #  public: http://43.132.168.72:9090
 #  endpoint: http://127.0.0.1:9090

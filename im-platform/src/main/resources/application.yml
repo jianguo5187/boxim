@@ -31,7 +31,7 @@ mybatis-plus:
   configuration:
     # 是否开启自动驼峰命名规则
     map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations:
     - classpath*:mapper/*.xml
 minio:
