@@ -77,4 +77,11 @@ public class LoginController {
     public Result<Integer> noAuthKefuNoReadCnt(@Valid @RequestBody NoAuthNoReadCntDto vo) {
         return ResultUtils.success(privateMessageService.noAuthKefuNoReadCnt(vo));
     }
+
+    @PostMapping("/appRegister")
+    @ApiOperation(value = "app用户注册", notes = "app用户注册")
+    public Result appRegister(@Valid @RequestBody AppRegisterDTO dto) {
+        userService.appRegister(dto);
+        return ResultUtils.success();
+    }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bx.implatform.dto.*;
 import org.apache.commons.lang3.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,10 +12,6 @@ import com.bx.imclient.IMClient;
 import com.bx.imcommon.enums.IMTerminalType;
 import com.bx.imcommon.util.JwtUtil;
 import com.bx.implatform.config.JwtProperties;
-import com.bx.implatform.dto.LoginDTO;
-import com.bx.implatform.dto.ModifyPwdDTO;
-import com.bx.implatform.dto.RegisterDTO;
-import com.bx.implatform.dto.ThirdLoginDTO;
 import com.bx.implatform.entity.Friend;
 import com.bx.implatform.entity.GroupMember;
 import com.bx.implatform.entity.User;
@@ -351,5 +348,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             vos.add(new OnlineTerminalVO(userId, terminals));
         });
         return vos;
+    }
+
+    @Override
+    public void appRegister(AppRegisterDTO dto) {
+
+        User user = this.findUserByThirdUserId(dto.getThirdUserId());
+        if (null != user) {
+            throw new GlobalException(ResultCode.USERNAME_ALREADY_REGISTER);
+        }
+        // 创建一个新的用户
+        user = new User();
+        user = BeanUtils.copyProperties(dto, User.class);
+        user.setType(2);
+        user.setPassword(passwordEncoder.encode("123456"));
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedString = now.format(formatter);
+
+        if(StringUtils.isEmpty(user.getUserName())){
+            //用户登录名为空
+            user.setUserName("U"+formattedString);
+        }
+        if(StringUtils.isEmpty(user.getNickName())){
+            //昵称为空
+            user.setNickName("temp_"+formattedString);
+        }
+        if(StringUtils.isNotEmpty(user.getUserIp())){
+            String ipAddress = getAddress(user.getUserIp());
+            user.setUserIpAddress(ipAddress);
+        }
+        this.save(user);
+
+        // 给客服账号自动添加好友
+        List<User> kefuUserList = this.findUserByType(1);
+        for(User kefuUser: kefuUserList){
+            friendService.addKefuFriend(kefuUser.getId(),user.getId());
+        }
     }
 }

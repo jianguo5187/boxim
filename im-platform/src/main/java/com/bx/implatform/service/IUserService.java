@@ -1,10 +1,7 @@
 package com.bx.implatform.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.bx.implatform.dto.LoginDTO;
-import com.bx.implatform.dto.ModifyPwdDTO;
-import com.bx.implatform.dto.RegisterDTO;
-import com.bx.implatform.dto.ThirdLoginDTO;
+import com.bx.implatform.dto.*;
 import com.bx.implatform.entity.User;
 import com.bx.implatform.vo.LoginVO;
 import com.bx.implatform.vo.OnlineTerminalVO;
@@ -116,5 +113,12 @@ public interface IUserService extends IService<User> {
      */
     List<OnlineTerminalVO> getOnlineTerminals(String userIds);
 
+
+    /**
+     * APP用户注册
+     *
+     * @param dto 注册dto
+     */
+    void appRegister(AppRegisterDTO dto);
 
 }
