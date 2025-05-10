@@ -685,7 +685,8 @@
 					content: receiptText + this.sendText + atText,
 					answerContent: autoAnswerMessage,
 					answerImgContent: autoAnswerImgMessage,
-					type: 0
+					type: 0,
+					autoFlg: "0"
 				}
 				
 				let msgInfo = {
@@ -699,7 +700,7 @@
 				this.fillTargetId(sendReadedInfo, this.chat.targetId);
 				this.sendText = "";
 				this.$http({
-					url: `/message/private/sendReaded`,
+					url: `/message/private/send`,
 					method: 'POST',
 					data: sendReadedInfo
 				}).then((data) => {

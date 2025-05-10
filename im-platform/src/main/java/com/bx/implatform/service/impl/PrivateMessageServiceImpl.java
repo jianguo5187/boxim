@@ -88,7 +88,7 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         log.info("发送私聊消息，发送id:{},接收id:{}，内容:{}", session.getUserId(), dto.getRecvId(), dto.getContent());
 
         //只判断玩家发送的信息，去自动回复
-        if(sendUser.getType() == 2){
+        if(!"0".equals(dto.getAutoFlg()) && sendUser.getType() == 2){
             //获取自动回复信息
             List<DefaultMessageVO> defaultMessages = defaultMessageService.findAutoMessage(content);
             boolean autoAnserFlg = false;
@@ -244,6 +244,26 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
             vo.setAnswerImgMessageId(answerMsg.getId());
         }
 
+        // 过滤消息内容
+        String content = sensitiveFilterUtil.filter(dto.getContent());
+        msg.setContent(content);
+        // 推送消息
+        PrivateMessageVO msgInfo = BeanUtils.copyProperties(msg, PrivateMessageVO.class);
+        IMPrivateMessage<PrivateMessageVO> sendMessage = new IMPrivateMessage<>();
+        // 玩家的时候固定推送PC端
+        sendMessage.setSender(new IMUserInfo(session.getUserId(), session.getTerminal()));
+//        if(sendUser.getType() == 2){
+//        }else{
+//            sendMessage.setSender(new IMUserInfo(session.getUserId(), session.getTerminal()));
+//        }
+        sendMessage.setRecvId(msgInfo.getRecvId());
+
+        sendMessage.setSendToSelf(true);
+        sendMessage.setData(msgInfo);
+        sendMessage.setSendResult(true);
+        imClient.sendPrivateMessage(sendMessage);
+        log.info("发送私聊消息，发送id:{},接收id:{}，内容:{}", session.getUserId(), dto.getRecvId(), dto.getContent());
+
         return vo;
     }
 
@@ -388,7 +408,8 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
                 .or(wp -> wp.eq(PrivateMessage::getRecvId, session.getUserId())
                     .in(PrivateMessage::getSendId, friendIds)))
             .orderByDesc(PrivateMessage::getId)
-            .last("limit 10");
+//            .last("limit 10")
+        ;
         List<PrivateMessage> messages = this.list(queryWrapper);
         // 消息顺序从小到大
         CollectionUtil.reverse(messages);
@@ -536,11 +557,13 @@ public class PrivateMessageServiceImpl extends ServiceImpl<PrivateMessageMapper,
         UserSession session = SessionContext.getSession();
         // 获取当前用户的消息
         LambdaQueryWrapper<PrivateMessage> queryWrapper = Wrappers.lambdaQuery();
+        Date minDate = DateUtils.addMonths(new Date(), -1);
         List<Integer> status = new ArrayList<>();
         status.add(MessageStatus.SENDED.code());
-        status.add(MessageStatus.UNSEND.code());
+//        status.add(MessageStatus.UNSEND.code());
         // 只能拉取最近1个月的
         queryWrapper.eq(PrivateMessage::getRecvId, session.getUserId())
+                .ge(PrivateMessage::getSendTime, minDate)
                 .in(PrivateMessage::getStatus,status);
         List<PrivateMessage> messages = this.list(queryWrapper);
         return messages.size();

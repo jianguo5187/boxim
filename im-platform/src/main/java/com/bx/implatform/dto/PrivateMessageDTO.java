@@ -26,4 +26,8 @@ public class PrivateMessageDTO {
     @ApiModelProperty(value = "消息类型")
     private Integer type;
 
+    @ApiModelProperty(value = "自动回复标识")
+    private String autoFlg;
+
+
 }
